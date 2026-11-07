@@ -102,8 +102,9 @@ const titleCase=s=>s.toLowerCase().replace(/(^|[\s\-(\/])([a-z])/g,(m,a,b)=>a+b.
 const fd=d=>d?d.split('-').reverse().join('-'):'';
 const ul=a=>Array.isArray(a)?'<ul>'+a.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':esc(a);
 const LOGO='https://davrecruit.davcmc.in/assets/img/logo.png';
-// Built-in key used when a teacher does not paste their own. Paste your Gemini key between the quotes.
-const DEFAULT_KEY='PASTE_YOUR_GEMINI_API_KEY_HERE';
+// Address of your Cloudflare Worker, which holds the school's key privately. No secret lives in this file.
+const PROXY_URL='PASTE_YOUR_WORKER_URL_HERE';
+const GEMINI_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 const SUBJECTS=['English','Hindi','Sanskrit','Mathematics','Science','Environmental Studies (EVS)','Social Science','History','Geography','Political Science','Economics','Physics','Chemistry','Biology','Computer Science','Informatics Practices','Accountancy','Business Studies','Psychology','General Knowledge','Moral Science / Value Education','Art & Craft','Music','Physical Education','Yoga'];
 ['III','IV','V','VI','VII','VIII','IX','X','XI','XII'].forEach(c=>$('cls').add(new Option(c,c)));
 SUBJECTS.forEach(s=>$('sub').add(new Option(s,s)));
@@ -179,8 +180,7 @@ const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r
 async function generate(kind){
  const d=readData();if(!d)return;
  const pasted=$('key').value.trim();
- const key=pasted||DEFAULT_KEY;
- if(!key||key.startsWith('PASTE_YOUR')){say('No API key is set. Paste your own key in the API key box.',1);return}
+ if(!pasted&&PROXY_URL.startsWith('PASTE_YOUR')){say('The school service is not set up yet. Paste your own key in the API key box.',1);return}
  if(pasted){try{localStorage.setItem('gkey',pasted)}catch(e){}}
  const btns=[...document.querySelectorAll('[data-k]')];btns.forEach(b=>b.disabled=true);
  say('Generating… this takes 20–60 seconds.');
@@ -194,7 +194,7 @@ Reply with ONLY valid JSON of this shape: ${SHAPES[kind]}`;
   const parts=[{text:prompt}];
   const f=$('file').files[0];
   if(f){if(f.size>15*1048576)throw new Error('Reference file is larger than 15 MB.');parts.push({inlineData:{mimeType:f.type||'application/pdf',data:await b64(f)}})}
-  const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts}],generationConfig:{responseMimeType:'application/json',temperature:0.6}})});
+  const r=await fetch(pasted?GEMINI_URL:PROXY_URL,{method:'POST',headers:pasted?{'Content-Type':'application/json','x-goog-api-key':pasted}:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}],generationConfig:{responseMimeType:'application/json',temperature:0.6}})});
   const j=await r.json();
   if(!r.ok)throw new Error(j.error?.message||'The AI service returned an error.');
   const txt=j.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'';
