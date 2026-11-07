@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5E Lesson Plan Generator – DAV Public Schools</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{--mar:#7a1520;--ink:#1d2330;--mut:#5b6474;--bg:#eef1f5;--card:#fff;--line:#cfd5de}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.ui header{background:var(--mar);color:#fff;padding:14px 20px;display:flex;gap:14px;align-items:center}
+.ui header img{height:52px;background:#fff;border-radius:50%;padding:2px}
+.ui header h1{font-size:20px;margin:0}.ui header p{margin:0;opacity:.85;font-size:13px}
+main{max-width:1000px;margin:18px auto;padding:0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.full{grid-column:1/-1}
+label{display:block;font-weight:600;font-size:13px;margin-bottom:3px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--mar);outline-offset:1px}
+.chk{display:flex;gap:8px;align-items:center;font-weight:600}.chk input{width:auto}
+.hint{font-size:12px;color:var(--mut);margin-top:2px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+button{font:inherit;font-weight:600;padding:10px 16px;border-radius:6px;border:1px solid var(--mar);background:var(--mar);color:#fff;cursor:pointer}
+button.alt{background:#fff;color:var(--mar)}button:disabled{opacity:.5;cursor:wait}
+#status{margin:10px 0 0;font-weight:600}#status.err{color:#b00020}
+#out{display:none}#out .bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.sheet{background:#fff;overflow-x:auto;padding:10px;border:1px solid var(--line)}
+/* ---------- report (shared by screen, print, PDF, Word) ---------- */
+.rpt{width:190mm;margin:0 auto;font-family:Cambria,Georgia,serif;font-size:11pt;color:#000;background:#fff}
+.rpt .pg{border:1px solid #c00000;padding:6mm;min-height:270mm;position:relative}
+.rpt .pb{page-break-before:always}
+.rpt .hd{display:flex;align-items:center;gap:12px;border-bottom:1px solid #33a0d6;padding-bottom:4px;margin-bottom:12px}
+.rpt .hd img{height:20mm}.rpt .hd div{flex:1;text-align:center;font-family:Arial,sans-serif}
+.rpt .hd b{font-size:22pt;display:block}.rpt .hd span{font-size:14pt;font-weight:bold}
+.rpt table{width:100%;border-collapse:collapse;margin-bottom:10px}
+.rpt td,.rpt th{border:1px solid #000;padding:3px 6px;vertical-align:top;font-size:10.5pt;text-align:left}
+.rpt .l{font-style:italic;white-space:nowrap}.rpt th{font-style:italic;font-weight:normal}
+.rpt ul{margin:0;padding-left:16px}.rpt ol{margin:0;padding-left:18px}
+.rpt .vt{width:9mm;text-align:center;vertical-align:middle;font-style:italic;font-size:13pt}
+.rpt .vt div{writing-mode:vertical-rl;transform:rotate(180deg);margin:auto}
+.rpt .ft{text-align:center;font-family:Arial,sans-serif;font-size:10pt;margin-top:8px}
+.rpt h3{font-size:12pt;margin:10px 0 4px}
+.rpt .q{margin:0 0 6px}.rpt .ans{color:#333;font-style:italic}
+@media(max-width:700px){.rpt{width:190mm}}
+@media print{
+ @page{size:A4;margin:8mm}
+ body{background:#fff}.ui{display:none!important}
+ #out,#out .sheet{display:block!important;border:0;padding:0;overflow:visible}#out .bar{display:none}
+ .rpt{width:auto}
+}
+</style>
+</head>
+<body>
+<div class="ui">
+<header>
+ <img src="https://davrecruit.davcmc.in/assets/img/logo.png" alt="DAV logo" onerror="this.style.display='none'">
+ <div><h1>5E Lesson Plan Generator</h1><p>Engage · Explore · Explain · Elaborate · Evaluate — AI-assisted planning for DAV teachers</p></div>
+</header>
+<main>
+<form id="f" class="card" onsubmit="return false">
+ <div class="grid">
+  <div class="full"><label for="school">School name</label><input id="school" value="DAV PUBLIC SCHOOLS, BUXAR" required></div>
+  <div><label for="teacher">Name of teacher</label><input id="teacher"></div>
+  <div><label for="cls">Class</label><select id="cls" required></select></div>
+  <div><label for="sec">Section</label><input id="sec" maxlength="3" required></div>
+  <div><label for="sub">Subject</label><select id="sub" required></select></div>
+  <div class="full"><label for="chap">Chapter name</label><input id="chap" required><div class="hint">First letter of every word is capitalised automatically.</div></div>
+  <div class="full"><label for="topics">Topics to be taught</label><textarea id="topics" rows="3" required placeholder="e.g. Definition, types, examples, applications"></textarea></div>
+  <div><label for="per">Number of periods</label><input id="per" type="number" min="1" max="40" step="1" inputmode="numeric" required><div class="hint">Whole numbers only.</div></div>
+  <div><label for="dur">Duration of each class (min)</label><input id="dur" type="number" min="10" max="120" step="1" value="40" required></div>
+  <div><label for="sd">Start date</label><input id="sd" type="date" required></div>
+  <div><label for="ed">End date</label><input id="ed" type="date" required></div>
+  <div class="full"><label class="chk"><input type="checkbox" id="sb"> Class with Smart Board</label><div class="hint">If ticked, PPTs, digital board and other digital teaching aids are included. Not printed in the report.</div></div>
+  <div class="full"><label for="file">Chapter reference (optional) — PDF, JPG or PNG</label><input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/*"><div class="hint">Up to 15 MB. The AI uses it to match your textbook content.</div></div>
+  <div class="full"><label for="key">Your own Gemini API key (optional)</label><input id="key" type="password" autocomplete="off" placeholder="Leave blank to use the school's key"><div class="hint">If you paste a key here it is used instead of the school's key. Saved only in this browser. Free key: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>.</div></div>
+ </div>
+</form>
+<div class="card">
+ <div class="btns">
+  <button data-k="plan">Generate lesson plan</button>
+  <button data-k="act" class="alt">Classroom activity sheet</button>
+  <button data-k="qa" class="alt">Question answer to evaluate chapter</button>
+  <button data-k="tlm" class="alt">TLM</button>
+ </div>
+ <p id="status" role="status"></p>
+</div>
+<section id="out">
+ <div class="bar">
+  <button id="bPrint">Print</button><button id="bPdf" class="alt">Download PDF</button><button id="bDoc" class="alt">Download Word (.doc)</button>
+ </div>
+ <div class="sheet"><div id="report" class="rpt"></div></div>
+</section>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const titleCase=s=>s.toLowerCase().replace(/(^|[\s\-(\/])([a-z])/g,(m,a,b)=>a+b.toUpperCase());
+const fd=d=>d?d.split('-').reverse().join('-'):'';
+const ul=a=>Array.isArray(a)?'<ul>'+a.map(x=>`<li>${esc(x)}</li>`).join('')+'</ul>':esc(a);
+const LOGO='https://davrecruit.davcmc.in/assets/img/logo.png';
+// Built-in key used when a teacher does not paste their own. Paste your Gemini key between the quotes.
+const DEFAULT_KEY='PASTE_YOUR_GEMINI_API_KEY_HERE';
+const SUBJECTS=['English','Hindi','Sanskrit','Mathematics','Science','Environmental Studies (EVS)','Social Science','History','Geography','Political Science','Economics','Physics','Chemistry','Biology','Computer Science','Informatics Practices','Accountancy','Business Studies','Psychology','General Knowledge','Moral Science / Value Education','Art & Craft','Music','Physical Education','Yoga'];
+['III','IV','V','VI','VII','VIII','IX','X','XI','XII'].forEach(c=>$('cls').add(new Option(c,c)));
+SUBJECTS.forEach(s=>$('sub').add(new Option(s,s)));
+$('cls').selectedIndex=-1;$('sub').selectedIndex=-1;
+try{$('key').value=localStorage.getItem('gkey')||''}catch(e){}
+$('chap').addEventListener('blur',()=>$('chap').value=titleCase($('chap').value.trim()));
+$('per').addEventListener('input',()=>$('per').value=$('per').value.replace(/\D/g,''));
+
+const FEED=['Lesson includes engaging introductory activity or question that is related to lesson topic.','Activity activates prior knowledge and interest required by students to be successful in the lesson.','Lesson provides opportunity to explore the concepts presented in the lesson through a variety of activities and/or investigations.','Components allow students the opportunity to develop a clear understanding of the concepts through their own explorations (student driven with teacher guidance/support).','Lesson provides students an opportunity to share/collaborate and discuss explorations in small group and whole class discussions.','Teacher acts as facilitator.',"Lesson provides opportunity for teacher to clarify and elaborate on concepts to deepen students' understanding and scientific vocabulary.",'Students are given activity to reinforce concepts and extend their knowledge to new situations and experiences.','Lesson includes formative assessments and summative assessments for the lesson.','Lesson includes exact questions and location of the formative assessments during instructional process. Assessment items clearly address lesson learning objective and standards.'];
+
+function head(d,title){return `<div class="hd"><img src="${LOGO}" crossorigin="anonymous" alt="" onerror="this.style.display='none'"><div><b>${esc(d.school)}</b><span>${title}</span></div></div>`}
+function info(d){return `<table>
+<tr><td class="l">Name of Teacher</td><td>${esc(d.teacher)}</td><td class="l">Class</td><td>${d.cls}</td><td class="l">Section</td><td>${esc(d.sec)}</td></tr>
+<tr><td class="l">Subject</td><td colspan="2">${esc(d.sub)}</td><td class="l">Chapter Name</td><td colspan="2">${esc(d.chap)}</td></tr></table>
+<table><tr><td class="l">No. of Class</td><td>${d.per}</td><td class="l">Duration <small>(min)</small></td><td>${d.dur}</td><td class="l">Start date</td><td>${fd(d.sd)}</td><td class="l">End Date</td><td>${fd(d.ed)}</td></tr></table>`}
+
+function renderPlan(p,d){
+ const S=p.stages,row=(k,l)=>`<tr><td class="vt"><div>${l}</div></td><td>${ul(S[k].teacher)}</td><td>${ul(S[k].student)}</td></tr>`;
+ const stHead='<tr><th style="width:9mm">Stage</th><th style="width:50%">Teacher Role Stage</th><th>Student Activity during Stage</th></tr>';
+ return `<div class="pg">${head(d,'E-Lesson Plan')}${info(d)}
+<table>
+<tr><td class="l" style="width:32mm">Topics to be Taught</td><td>${esc(d.topics)}</td></tr>
+<tr><td class="l">Key Concepts:</td><td>${ul(p.keyConcepts)}</td></tr>
+<tr><td class="l">Learning Objectives</td><td><ol>${p.objectives.map(o=>`<li>${esc(o)}</li>`).join('')}</ol></td></tr>
+<tr><td class="l">Teaching Aids</td><td>${ul(p.teachingAids)}</td></tr></table>
+<table>${stHead}${row('engage','Engage')}${row('explore','Explore')}${row('explain','Explain')}${row('elaborate','Elaborate')}</table>
+<div class="ft">Page 1 of 2</div></div>
+<div class="pg pb"><table>${stHead}<tr><td class="vt"><div>Evaluation</div></td><td>${ul(S.evaluate.teacher)}</td><td>${ul(S.evaluate.student)}</td></tr></table>
+<table><tr><td class="l" style="width:32mm">Homework</td><td>${ul(p.homework)}</td></tr>
+<tr><td class="l">Which SDG Goal Highlighted in this Chapter &amp; How?</td><td>${esc(p.sdg)}</td></tr></table>
+<table><tr><td>Date: ${fd(d.sd)}</td><td style="text-align:right">Teacher name: ${esc(d.teacher)}</td></tr></table>
+<p style="text-align:center;font-weight:bold;margin:8px 0 2px">FEEDBACK OF THE SUPERVISOR</p>
+<p style="font-size:9.5pt;margin:0 0 4px">(In a 5-point Scale: A: Excellent; B: Good; C: Average; D: Below Average; E: Needs Improvement)</p>
+<table><tr><th style="width:10mm">S/N</th><th>Descriptive Indicators</th><th style="width:16mm">Grade</th></tr>
+${FEED.map((t,i)=>`<tr><td>${i+1}.</td><td>${t}</td><td></td></tr>`).join('')}</table>
+<table style="border:0"><tr><td style="border:0">Date:</td><td style="border:0;text-align:center">Sign. of the Supervisor</td><td style="border:0;text-align:right">Sign. of the Principal</td></tr></table>
+<div class="ft">Page 2 of 2</div></div>`}
+
+function renderAct(p,d){return `<div class="pg">${head(d,'Classroom Activity Sheet')}${info(d)}
+${p.activities.map((a,i)=>`<h3>Activity ${i+1}: ${esc(a.title)}</h3><table>
+<tr><td class="l" style="width:32mm">Type / Time</td><td>${esc(a.type)} · ${esc(a.time)}</td></tr>
+<tr><td class="l">Materials</td><td>${ul(a.materials)}</td></tr>
+<tr><td class="l">Steps</td><td><ol>${a.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></td></tr>
+<tr><td class="l">Learning Outcome</td><td>${esc(a.outcome)}</td></tr>
+<tr><td class="l">Student Response</td><td style="height:18mm"></td></tr></table>`).join('')}</div>`}
+
+function renderQA(p,d){
+ const qs=(t,a,ans)=>`<h3>${t}</h3>`+a.map((x,i)=>`<p class="q">${i+1}. ${esc(x.q)}${x.options?'<br>'+x.options.map((o,j)=>`(${'abcd'[j]}) ${esc(o)}`).join('&nbsp;&nbsp; '):''}<br><span class="ans">Ans: ${esc(x.a)}</span></p>`).join('');
+ return `<div class="pg">${head(d,'Chapter Evaluation – Questions &amp; Answers')}${info(d)}
+${qs('A. Multiple Choice Questions (1 mark each)',p.mcq)}${qs('B. Very Short / Short Answer Questions (2 marks each)',p.short)}${qs('C. Long Answer Questions (5 marks each)',p.long)}${qs('D. Higher Order Thinking Skills (HOTS)',p.hots)}</div>`}
+
+function renderTLM(p,d){return `<div class="pg">${head(d,'Teaching Learning Material (TLM)')}${info(d)}
+<table><tr><th>TLM</th><th>Materials needed</th><th>How to prepare</th><th>How to use in class</th><th>5E stage</th></tr>
+${p.items.map(t=>`<tr><td>${esc(t.name)}</td><td>${ul(t.materials)}</td><td>${esc(t.prepare)}</td><td>${esc(t.use)}</td><td>${esc(t.stage)}</td></tr>`).join('')}</table></div>`}
+
+const SHAPES={
+plan:'{"keyConcepts":[string],"objectives":[5 strings, measurable, starting with action verbs],"teachingAids":[string],"stages":{"engage":{"teacher":[string],"student":[string]},"explore":{...},"explain":{...},"elaborate":{...},"evaluate":{...}},"homework":[string],"sdg":"SDG number and name, then how this chapter connects (2-3 sentences)"}. Every stage bullet must name the period it belongs to (e.g. "P1: ...") so the work is spread across all periods, with concrete activities, questions and timings; student column mirrors teacher column.',
+act:'{"activities":[{"title":string,"type":"individual|pair|group","time":"e.g. 15 min","materials":[string],"steps":[string],"outcome":string}]} with 4 to 6 hands-on classroom activities covering the topics.',
+qa:'{"mcq":[{"q":string,"options":[4 strings],"a":"letter and text"}] (10 items),"short":[{"q","a"}] (6 items),"long":[{"q","a"}] (4 items),"hots":[{"q","a"}] (3 items)}',
+tlm:'{"items":[{"name":string,"materials":[string],"prepare":string,"use":string,"stage":"Engage|Explore|Explain|Elaborate|Evaluate"}]} with 5 to 7 low-cost TLMs.'};
+const RENDER={plan:renderPlan,act:renderAct,qa:renderQA,tlm:renderTLM};
+
+function readData(){
+ if(!$('f').checkValidity()){$('f').reportValidity();return null}
+ const d={school:$('school').value.trim(),teacher:$('teacher').value.trim(),cls:$('cls').value,sec:$('sec').value.trim().toUpperCase(),sub:$('sub').value,chap:titleCase($('chap').value.trim()),topics:$('topics').value.trim(),per:parseInt($('per').value,10),dur:$('dur').value,sd:$('sd').value,ed:$('ed').value,sb:$('sb').checked};
+ $('chap').value=d.chap;
+ if(!Number.isInteger(d.per)||d.per<1){say('Number of periods must be a whole number.',1);return null}
+ if(d.ed<d.sd){say('End date cannot be before start date.',1);return null}
+ return d}
+function say(m,e){const s=$('status');s.textContent=m;s.className=e?'err':''}
+const b64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(',')[1]);r.onerror=()=>rej(new Error('Could not read the file.'));r.readAsDataURL(f)});
+
+async function generate(kind){
+ const d=readData();if(!d)return;
+ const pasted=$('key').value.trim();
+ const key=pasted||DEFAULT_KEY;
+ if(!key||key.startsWith('PASTE_YOUR')){say('No API key is set. Paste your own key in the API key box.',1);return}
+ if(pasted){try{localStorage.setItem('gkey',pasted)}catch(e){}}
+ const btns=[...document.querySelectorAll('[data-k]')];btns.forEach(b=>b.disabled=true);
+ say('Generating… this takes 20–60 seconds.');
+ try{
+  const aids=d.sb?'The class has a Smart Board: include PPT, digital board, videos/simulations and other digital aids, along with simple physical aids.':'There is NO smart board: use only non-digital aids (chalkboard, charts, models, real objects, worksheets).';
+  const prompt=`You are an expert Indian school curriculum designer (NCERT/CBSE aligned) preparing a ${kind==='plan'?'5E (Engage, Explore, Explain, Elaborate, Evaluate) lesson plan':'teaching resource'} for DAV Public Schools.
+Class ${d.cls}, Section ${d.sec}. Subject: ${d.sub}. Chapter: ${d.chap}. Topics: ${d.topics}.
+Periods: ${d.per}, each ${d.dur} minutes, from ${fd(d.sd)} to ${fd(d.ed)}. ${aids}
+Age-appropriate language, Indian context, concise bullet points.${$('file').files[0]?' Base the content on the attached chapter reference.':''}
+Reply with ONLY valid JSON of this shape: ${SHAPES[kind]}`;
+  const parts=[{text:prompt}];
+  const f=$('file').files[0];
+  if(f){if(f.size>15*1048576)throw new Error('Reference file is larger than 15 MB.');parts.push({inlineData:{mimeType:f.type||'application/pdf',data:await b64(f)}})}
+  const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{parts}],generationConfig:{responseMimeType:'application/json',temperature:0.6}})});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error?.message||'The AI service returned an error.');
+  const txt=j.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'';
+  const data=JSON.parse(txt.replace(/```json|```/g,'').trim());
+  $('report').innerHTML=RENDER[kind](data,d);
+  $('out').style.display='block';$('out').scrollIntoView({behavior:'smooth'});
+  window.curName=`${{plan:'5E_Lesson_Plan',act:'Activity_Sheet',qa:'Question_Answer',tlm:'TLM'}[kind]}_Class${d.cls}_${d.chap.replace(/\W+/g,'_')}`;
+  say('Done. Print or download below.');
+ }catch(e){say(e instanceof SyntaxError?'The AI reply was incomplete. Please try again.':e.message,1)}
+ btns.forEach(b=>b.disabled=false)}
+document.querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>generate(b.dataset.k));
+
+$('bPrint').onclick=()=>window.print();
+$('bPdf').onclick=()=>html2pdf().set({margin:[8,8,8,8],filename:curName+'.pdf',image:{type:'jpeg',quality:.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4'},pagebreak:{mode:['css','legacy'],before:'.pb'}}).from($('report')).save();
+$('bDoc').onclick=()=>{
+ const css=[...document.styleSheets[0].cssRules].filter(r=>r.selectorText&&r.selectorText.startsWith('.rpt')).map(r=>r.cssText).join('');
+ const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><style>@page{size:21cm 29.7cm;margin:1.2cm}${css}</style></head><body><div class="rpt" style="width:auto">${$('report').innerHTML}</div></body></html>`;
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff',html],{type:'application/msword'}));a.download=curName+'.doc';a.click();URL.revokeObjectURL(a.href)};
+</script>
+</body>
+</html>
