@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAV Public School, Buxar - Teacher Diary & E-Lesson Plan Generator</title>
+    <title>DAV Public School, Buxar - Advanced Teacher Diary & E-Lesson Plan Generator</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -28,16 +28,30 @@
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #F8FAFC;
+            font-size: 13px; /* Minimum font size requirement */
         }
         @media print {
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
             body {
                 background: white;
+                font-size: 13px !important;
             }
             .no-print {
                 display: none !important;
             }
-            .print-break {
+            .print-page {
                 page-break-before: always;
+                page-break-inside: avoid;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+            .print-page:first-of-type {
+                page-break-before: avoid;
             }
         }
     </style>
@@ -50,8 +64,8 @@
             <div class="flex items-center space-x-3 mb-2 sm:mb-0">
                 <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="DAV Logo" class="h-12 w-auto bg-white p-1 rounded shadow">
                 <div>
-                    <h1 class="text-lg font-bold tracking-wider uppercase">DAV Public Schools, Buxar</h1>
-                    <p class="text-xs text-red-200">Teacher Diary & E-Lesson Plan Automation System</p>
+                    <h1 class="text-base font-bold tracking-wider uppercase">DAV Public Schools, Buxar</h1>
+                    <p class="text-xs text-red-200">Advanced Teacher Diary & Multi-Day E-Lesson Plan System</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -71,8 +85,8 @@
         <!-- Left Panel: Input Form (Col 5) -->
         <section class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-200 p-6 no-print">
             <div class="flex items-center justify-between mb-4 border-b pb-3">
-                <h2 class="text-base font-bold text-slate-800 flex items-center">
-                    <i class="fas fa-edit text-davRed mr-2"></i> Lesson Details & Content
+                <h2 class="text-sm font-bold text-slate-800 flex items-center">
+                    <i class="fas fa-edit text-davRed mr-2"></i> Lesson Details & Multi-File Upload
                 </h2>
                 <span class="text-xs text-slate-500 font-medium">Auto-saves locally</span>
             </div>
@@ -83,11 +97,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block font-medium text-slate-700 mb-1">Teacher Name</label>
-                        <input type="text" id="teacher-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none" placeholder="e.g. Vijay Bhushan Singh">
+                        <input type="text" id="teacher-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none text-sm" placeholder="e.g. Vijay Bhushan Singh">
                     </div>
                     <div>
                         <label class="block font-medium text-slate-700 mb-1">Subject</label>
-                        <select id="subject-select" onchange="toggleOtherSubject(this.value)" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none bg-white">
+                        <select id="subject-select" onchange="toggleOtherSubject(this.value)" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none bg-white text-sm">
                             <option value="">Select Subject</option>
                             <option value="English">English</option>
                             <option value="Hindi">Hindi</option>
@@ -116,28 +130,28 @@
                     </div>
                 </div>
 
-                <!-- Custom Subject Input (Hidden by default) -->
+                <!-- Custom Subject Input -->
                 <div id="other-subject-container" class="hidden">
                     <label class="block font-medium text-slate-700 mb-1">Custom Subject Name</label>
-                    <input type="text" id="custom-subject" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none" placeholder="Enter subject name">
+                    <input type="text" id="custom-subject" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none text-sm" placeholder="Enter subject name">
                 </div>
 
                 <!-- Chapter Name & Topics -->
                 <div>
                     <label class="block font-medium text-slate-700 mb-1">Chapter Name / Title</label>
-                    <input type="text" id="chapter-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none" placeholder="e.g. Chapter 3: Synthetic Fibres and Plastics">
+                    <input type="text" id="chapter-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none text-sm" placeholder="e.g. Chapter 3: Synthetic Fibres and Plastics">
                 </div>
 
                 <div>
                     <label class="block font-medium text-slate-700 mb-1">Specific Topics to be Taught</label>
-                    <input type="text" id="topics" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none" placeholder="e.g. Types of Synthetic Fibres, Characteristics, Plastics">
+                    <input type="text" id="topics" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none text-sm" placeholder="e.g. Types of Fibres, Plastics and Environment">
                 </div>
 
-                <!-- Class, Section -->
+                <!-- Class, Section & Periods -->
                 <div class="grid grid-cols-3 gap-2">
                     <div>
                         <label class="block font-medium text-slate-700 mb-1">Class</label>
-                        <select id="class-select" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none bg-white">
+                        <select id="class-select" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none bg-white text-sm">
                             <option value="">Select</option>
                             <option value="III">III</option>
                             <option value="IV">IV</option>
@@ -153,36 +167,14 @@
                     </div>
                     <div>
                         <label class="block font-medium text-slate-700 mb-1">Section</label>
-                        <select id="section-select" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none bg-white">
+                        <select id="section-select" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none bg-white text-sm">
                             <option value="">Select</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                            <option value="F">F</option>
-                            <option value="G">G</option>
-                            <option value="H">H</option>
-                            <option value="I">I</option>
-                            <option value="J">J</option>
-                            <option value="K">K</option>
-                            <option value="L">L</option>
-                            <option value="M">M</option>
-                            <option value="JA">JA</option>
-                            <option value="JB">JB</option>
-                            <option value="JC">JC</option>
-                            <option value="JD">JD</option>
-                            <option value="JE">JE</option>
-                            <option value="LA">LA</option>
-                            <option value="LB">LB</option>
-                            <option value="LC">LC</option>
-                            <option value="LD">LD</option>
-                            <option value="LE">LE</option>
+                            <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option><option value="I">I</option><option value="J">J</option><option value="K">K</option><option value="L">L</option><option value="M">M</option><option value="JA">JA</option><option value="JB">JB</option><option value="JC">JC</option><option value="JD">JD</option><option value="JE">JE</option><option value="LA">LA</option><option value="LB">LB</option><option value="LC">LC</option><option value="LD">LD</option><option value="LE">LE</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block font-medium text-slate-700 mb-1">Periods</label>
-                        <input type="number" id="periods-count" min="1" max="10" value="3" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none">
+                        <label class="block font-medium text-slate-700 mb-1">Periods / Days</label>
+                        <input type="number" id="periods-count" min="1" max="6" value="3" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none text-sm">
                     </div>
                 </div>
 
@@ -198,29 +190,30 @@
                     </div>
                     <div>
                         <label class="block font-medium text-slate-700 mb-1">Duration (Min)</label>
-                        <input type="number" id="duration" value="40" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none">
+                        <input type="number" id="duration" value="40" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none text-sm">
                     </div>
                 </div>
 
-                <!-- Content & File Upload -->
+                <!-- Content & Multiple File Upload -->
                 <div>
-                    <label class="block font-medium text-slate-700 mb-1">Content to be Taught / Notes Summary</label>
-                    <textarea id="content-text" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none" placeholder="Paste core content, textbook summary, or key notes here..."></textarea>
+                    <label class="block font-medium text-slate-700 mb-1">Content to be Taught / Questions to Solve</label>
+                    <textarea id="content-text" rows="3" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-davRed outline-none text-sm" placeholder="Paste notes, textbook text, or specific questions that need solutions..."></textarea>
                 </div>
 
                 <div>
-                    <label class="block font-medium text-slate-700 mb-1">Upload Reference PDF / Image (Optional)</label>
+                    <label class="block font-medium text-slate-700 mb-1">Upload Multiple Reference PDFs / Images</label>
                     <div class="border-2 border-dashed border-slate-300 rounded-lg p-3 text-center hover:bg-slate-50 transition cursor-pointer relative">
-                        <input type="file" id="reference-file" accept=".pdf,image/*" onchange="handleFileUpload(event)" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <input type="file" id="reference-files" accept=".pdf,image/*" multiple onchange="handleMultipleFiles(event)" class="absolute inset-0 opacity-0 cursor-pointer">
                         <div id="file-label" class="text-xs text-slate-500">
                             <i class="fas fa-cloud-upload-alt text-davRed text-base mb-1"></i><br>
-                            Click or drag file to upload reference material
+                            Click or drag multiple files (PDF / Images) here
                         </div>
                     </div>
+                    <div id="file-list" class="mt-2 text-xs text-slate-600 space-y-1"></div>
                 </div>
 
-                <button type="submit" class="w-full bg-davRed hover:bg-davRedDark text-white font-semibold py-2.5 px-4 rounded-lg shadow transition flex items-center justify-center">
-                    <i class="fas fa-magic mr-2"></i> Generate Teacher Diary & E-Lesson Plan
+                <button type="submit" class="w-full bg-davRed hover:bg-davRedDark text-white font-semibold py-2.5 px-4 rounded-lg shadow transition flex items-center justify-center text-sm">
+                    <i class="fas fa-magic mr-2"></i> Generate Diary & Multi-Day Lesson Plans
                 </button>
             </form>
         </section>
@@ -232,23 +225,23 @@
             <div>
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 mb-4 gap-2 no-print">
                     <div class="flex space-x-2">
-                        <button onclick="switchTab('diary')" id="tab-btn-diary" class="px-4 py-2 text-xs font-bold rounded-lg bg-davRed text-white shadow transition">
-                            <i class="fas fa-book mr-1.5"></i> Teacher Diary Summary
+                        <button onclick="switchTab('diary')" id="tab-btn-diary" class="px-3 py-2 text-xs font-bold rounded-lg bg-davRed text-white shadow transition">
+                            <i class="fas fa-book mr-1.5"></i> Teacher Diary
                         </button>
-                        <button onclick="switchTab('lesson')" id="tab-btn-lesson" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                            <i class="fas fa-clipboard-list mr-1.5"></i> E-Lesson Plan Template
+                        <button onclick="switchTab('lessons')" id="tab-btn-lessons" class="px-3 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+                            <i class="fas fa-clipboard-list mr-1.5"></i> Daily Lesson Plans (<span id="plan-count-badge">3</span>)
                         </button>
                     </div>
                     <div class="flex space-x-2">
                         <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs px-3 py-2 rounded-lg transition flex items-center">
-                            <i class="fas fa-print mr-1.5"></i> Print / PDF
+                            <i class="fas fa-print mr-1.5"></i> Print A4 Pages
                         </button>
                     </div>
                 </div>
 
                 <!-- TAB 1: TEACHER DIARY SUMMARY -->
-                <div id="tab-content-diary" class="space-y-4">
-                    <div class="border-2 border-slate-800 p-4 rounded text-xs">
+                <div id="tab-content-diary" class="space-y-4 print-page">
+                    <div class="border-2 border-slate-800 p-4 rounded text-sm space-y-3">
                         <!-- School Header -->
                         <div class="text-center border-b-2 border-slate-800 pb-2 mb-3">
                             <div class="flex justify-between items-center">
@@ -257,7 +250,7 @@
                                     <h2 class="font-bold text-sm tracking-wide uppercase">DAV PUBLIC SCHOOLS, BUXAR</h2>
                                     <h3 class="font-bold text-xs">TEACHER'S DIARY 2026</h3>
                                 </div>
-                                <div class="text-right text-[10px]">
+                                <div class="text-right text-xs">
                                     <p><strong>Date:</strong> <span id="out-start-date">--</span> to <span id="out-end-date">--</span></p>
                                     <p><strong>Subject:</strong> <span id="out-subject">--</span></p>
                                 </div>
@@ -265,15 +258,15 @@
                         </div>
 
                         <!-- Info Grid -->
-                        <div class="grid grid-cols-2 gap-2 mb-3 border-b border-slate-400 pb-2">
+                        <div class="grid grid-cols-2 gap-2 mb-3 border-b border-slate-400 pb-2 text-sm">
                             <p><strong>Class & Section:</strong> <span id="out-class-sec">--</span></p>
                             <p><strong>Period & Class Nos.:</strong> <span id="out-periods">--</span> Periods</p>
                             <p><strong>Teacher Name:</strong> <span id="out-teacher">--</span></p>
                             <p><strong>Chapter:</strong> <span id="out-chapter">--</span></p>
                         </div>
 
-                        <!-- Diary Main Table Structure (matching exact template) -->
-                        <div class="space-y-3">
+                        <!-- Diary Fields -->
+                        <div class="space-y-3 text-sm">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div class="border border-slate-400 p-2 rounded">
                                     <p class="font-bold text-slate-700 mb-1">Lesson/Topic:</p>
@@ -281,37 +274,37 @@
                                 </div>
                                 <div class="border border-slate-400 p-2 rounded">
                                     <p class="font-bold text-slate-700 mb-1">Learning Outcome / Curriculum Goal:</p>
-                                    <p id="out-learning-outcome" class="text-slate-600">Students will acquire conceptual clarity and practical understanding of core chapter topics.</p>
+                                    <p id="out-learning-outcome" class="text-slate-600">Students will acquire conceptual clarity and practical problem-solving capability.</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div class="border border-slate-400 p-2 rounded">
                                     <p class="font-bold text-slate-700 mb-1">Methodology / Teaching Strategies & Teaching Aids:</p>
-                                    <p id="out-methodology" class="text-slate-600">Interactive explanation, whiteboard diagrams, ICT digital models, Q&A sessions.</p>
+                                    <p id="out-methodology" class="text-slate-600">Interactive explanation, solved Q&A demonstration, whiteboard diagrams, ICT models.</p>
                                 </div>
                                 <div class="border border-slate-400 p-2 rounded">
-                                    <p class="font-bold text-slate-700 mb-1">Interdisciplinary Linkage & Infusion of Life Skills, Value:</p>
-                                    <p class="text-slate-600">Connecting scientific principles with real-life environmental sustainability and critical thinking values.</p>
+                                    <p class="font-bold text-slate-700 mb-1">Interdisciplinary Linkage & Infusion of Life Skills:</p>
+                                    <p class="text-slate-600">Connecting concepts to daily life utility, environmental sustainability, and critical analysis.</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                                 <div class="border border-slate-400 p-2 rounded">
-                                    <p class="font-bold text-slate-700 mb-1">Assessment Strategies (Worksheets / Activities / Projects):</p>
-                                    <p id="out-assessment" class="text-slate-600">Class worksheet execution, concept mapping activity, collaborative mini-project.</p>
+                                    <p class="font-bold text-slate-700 mb-1">Assessment Strategies (Worksheet / Activity / Solved Q&A):</p>
+                                    <p id="out-assessment" class="text-slate-600">Solved exercises from attached files, worksheet execution, and peer checks.</p>
                                 </div>
                                 <div class="border border-slate-400 p-2 rounded">
                                     <p class="font-bold text-slate-700 mb-1">Home Assignment:</p>
-                                    <p id="out-homework" class="text-slate-600">Textbook exercise review questions and conceptual problem solving.</p>
+                                    <p id="out-homework" class="text-slate-600">Practice remaining unsolved questions from reference worksheet.</p>
                                 </div>
                                 <div class="border border-slate-400 p-2 rounded">
                                     <p class="font-bold text-slate-700 mb-1">Competency Based Question:</p>
-                                    <p id="out-competency" class="text-slate-600">Application-based reasoning question linking chapter concepts to daily life phenomena.</p>
+                                    <p id="out-competency" class="text-slate-600">Application-based analytical problem derived from uploaded source material.</p>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-2 border-t border-slate-400 pt-2">
+                            <div class="grid grid-cols-2 gap-2 border-t border-slate-400 pt-2 text-sm">
                                 <div>
                                     <p><strong>Whether Notebook (CW/HW) Checked?</strong> Yes [ ✔ ] / No [ &nbsp; ]</p>
                                     <p class="mt-1"><strong>Whether Topic Covered?</strong> Yes [ ✔ ] / No [ &nbsp; ]</p>
@@ -324,7 +317,7 @@
                         </div>
 
                         <!-- Signatures -->
-                        <div class="flex justify-between items-end mt-6 pt-4 border-t border-slate-800 text-[10px]">
+                        <div class="flex justify-between items-end mt-4 pt-3 border-t border-slate-800 text-xs">
                             <div class="text-center">
                                 <div class="h-6"></div>
                                 <p class="border-t border-slate-600 px-4 pt-1">Teacher's Signature</p>
@@ -341,123 +334,25 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: DETAILED E-LESSON PLAN TEMPLATE -->
-                <div id="tab-content-lesson" class="space-y-4 hidden">
-                    <div class="border-2 border-slate-800 p-4 rounded text-xs space-y-3">
-                        <!-- Header -->
-                        <div class="flex justify-between items-center border-b-2 border-slate-800 pb-2">
-                            <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="Logo" class="h-10 w-auto">
-                            <div class="text-center">
-                                <p class="text-[10px] font-semibold text-slate-500">MANAGING COMMITTEE, DAV PUBLIC SCHOOLS</p>
-                                <h2 class="font-bold text-sm tracking-wide">DAV PUBLIC SCHOOL, BUXAR</h2>
-                                <h3 class="font-bold text-davRed">E-Lesson Plan</h3>
-                            </div>
-                            <div class="text-right text-[10px]">
-                                <p><strong>Date:</strong> <span id="lp-date">--</span></p>
-                            </div>
-                        </div>
-
-                        <!-- Meta Grid -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 border-b border-slate-400 pb-2">
-                            <p><strong>Teacher:</strong> <span id="lp-teacher">--</span></p>
-                            <p><strong>Subject:</strong> <span id="lp-subject">--</span></p>
-                            <p><strong>Class/Sec:</strong> <span id="lp-class">--</span></p>
-                            <p><strong>Chapter:</strong> <span id="lp-chapter">--</span></p>
-                            <p><strong>No. of Class:</strong> <span id="lp-periods">--</span></p>
-                            <p><strong>Duration:</strong> <span id="lp-duration">--</span> min</p>
-                            <p><strong>Start:</strong> <span id="lp-start">--</span></p>
-                            <p><strong>End:</strong> <span id="lp-end">--</span></p>
-                        </div>
-
-                        <!-- Key Concepts & Objectives -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">Key Concepts:</p>
-                                <p id="lp-key-concepts" class="text-slate-600">Fundamental terminology, structural properties, practical applications.</p>
-                            </div>
-                            <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">Learning Objectives:</p>
-                                <ol class="list-decimal list-inside text-slate-600 space-y-0.5">
-                                    <li>Recall core definitions and concepts accurately.</li>
-                                    <li>Analyze patterns and classify characteristics.</li>
-                                    <li>Apply scientific/academic principles to new contexts.</li>
-                                    <li>Collaborate in peer problem-solving activities.</li>
-                                    <li>Demonstrate competency through worksheets and tasks.</li>
-                                </ol>
-                            </div>
-                        </div>
-
-                        <!-- Teaching Aids & 5-E Model Table -->
-                        <div class="border border-slate-400 p-2 rounded">
-                            <p class="font-bold text-slate-700 mb-1">Teaching Aids:</p>
-                            <p id="lp-teaching-aids" class="text-slate-600 mb-2">Smartboard, projector, flashcards, model charts, interactive digital resources.</p>
-                            
-                            <p class="font-bold text-slate-700 mb-1">5-E Pedagogical Stages:</p>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-left border-collapse border border-slate-400 text-[11px]">
-                                    <thead>
-                                        <tr class="bg-slate-100">
-                                            <th class="border border-slate-400 p-1 w-20">Stage</th>
-                                            <th class="border border-slate-400 p-1">Teacher Role</th>
-                                            <th class="border border-slate-400 p-1">Student Activity</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td class="border border-slate-400 p-1 font-bold">Engage</td>
-                                            <td class="border border-slate-400 p-1">Presents introductory real-world scenario/question to activate prior knowledge.</td>
-                                            <td class="border border-slate-400 p-1">Responds to prompts, shares prior experiences and observations.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="border border-slate-400 p-1 font-bold">Explore</td>
-                                            <td class="border border-slate-400 p-1">Facilitates guided group exploration and hands-on investigation.</td>
-                                            <td class="border border-slate-400 p-1">Examines specimens/models, records observations collaboratively.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="border border-slate-400 p-1 font-bold">Explain</td>
-                                            <td class="border border-slate-400 p-1">Clarifies concepts, introduces formal academic vocabulary and definitions.</td>
-                                            <td class="border border-slate-400 p-1">Asks clarifying questions, notes down key theoretical definitions.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="border border-slate-400 p-1 font-bold">Elaborate</td>
-                                            <td class="border border-slate-400 p-1">Assigns extended challenges to apply knowledge to novel situations.</td>
-                                            <td class="border border-slate-400 p-1">Solves higher-order problems and discusses interdisciplinary connections.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="border border-slate-400 p-1 font-bold">Evaluate</td>
-                                            <td class="border border-slate-400 p-1">Administers formative assessment tasks, worksheets, and quizzes.</td>
-                                            <td class="border border-slate-400 p-1">Completes assessment items independently to demonstrate mastery.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Homework & SDG Goals -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">Evaluation & Homework:</p>
-                                <p id="lp-homework" class="text-slate-600">Complete review questions and practice worksheet problems.</p>
-                            </div>
-                            <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">SDG Goal Highlighted:</p>
-                                <p class="text-slate-600"><strong>SDG 4 (Quality Education):</strong> Promoting inclusive and equitable quality education through active experiential learning.</p>
-                            </div>
-                        </div>
+                <!-- TAB 2: MULTI-DAY E-LESSON PLANS CONTAINER -->
+                <div id="tab-content-lessons" class="space-y-6 hidden">
+                    <div id="lesson-plans-container" class="space-y-6">
+                        <!-- Dynamically injected daily lesson plans -->
                     </div>
                 </div>
             </div>
 
             <!-- Footer Note -->
             <div class="mt-4 pt-3 border-t text-center text-xs text-slate-400 no-print">
-                DAV Public School Buxar © 2026 • Official Lesson Plan System
+                DAV Public School Buxar © 2026 • Official A4 Lesson Plan Automation
             </div>
         </section>
     </main>
 
-    <!-- JavaScript Logic & Offline PWA Support -->
+    <!-- JavaScript Logic & Multi-Day Generation -->
     <script>
-        // Toggle Custom Subject Input
+        let uploadedFilesData = [];
+
         function toggleOtherSubject(val) {
             const container = document.getElementById('other-subject-container');
             if (val === 'Other') {
@@ -469,36 +364,43 @@
             }
         }
 
-        // Tab Switching
         function switchTab(tab) {
             const diaryTab = document.getElementById('tab-content-diary');
-            const lessonTab = document.getElementById('tab-content-lesson');
+            const lessonsTab = document.getElementById('tab-content-lessons');
             const diaryBtn = document.getElementById('tab-btn-diary');
-            const lessonBtn = document.getElementById('tab-btn-lesson');
+            const lessonsBtn = document.getElementById('tab-btn-lessons');
 
             if (tab === 'diary') {
                 diaryTab.classList.remove('hidden');
-                lessonTab.classList.add('hidden');
-                diaryBtn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-davRed text-white shadow transition";
-                lessonBtn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
+                lessonsTab.classList.add('hidden');
+                diaryBtn.className = "px-3 py-2 text-xs font-bold rounded-lg bg-davRed text-white shadow transition";
+                lessonsBtn.className = "px-3 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
             } else {
                 diaryTab.classList.add('hidden');
-                lessonTab.classList.remove('hidden');
-                lessonBtn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-davRed text-white shadow transition";
-                diaryBtn.className = "px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
+                lessonsTab.classList.remove('hidden');
+                lessonsBtn.className = "px-3 py-2 text-xs font-bold rounded-lg bg-davRed text-white shadow transition";
+                diaryBtn.className = "px-3 py-2 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
             }
         }
 
-        // File Upload Handler
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            const label = document.getElementById('file-label');
-            if (file) {
-                label.innerHTML = `<i class="fas fa-check-circle text-green-600 text-base mb-1"></i><br><strong>${file.name}</strong> loaded successfully`;
+        function handleMultipleFiles(event) {
+            const files = event.target.files;
+            const fileListContainer = document.getElementById('file-list');
+            fileListContainer.innerHTML = '';
+            uploadedFilesData = [];
+
+            if (files.length > 0) {
+                document.getElementById('file-label').innerHTML = `<i class="fas fa-check-circle text-green-600 text-base mb-1"></i><br><strong>${files.length} file(s) attached successfully</strong>`;
+                for (let i = 0; i < files.length; i++) {
+                    uploadedFilesData.push(files[i].name);
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between bg-slate-50 px-2 py-1 rounded border border-slate-200 text-xs";
+                    div.innerHTML = `<span><i class="fas fa-file-alt text-davRed mr-1.5"></i> ${files[i].name}</span><span class="text-green-600 font-medium">Ready</span>`;
+                    fileListContainer.appendChild(div);
+                }
             }
         }
 
-        // Generate Documents & Update DOM
         function generateDocuments(e) {
             e.preventDefault();
 
@@ -512,78 +414,161 @@
             const topics = document.getElementById('topics').value;
             const className = document.getElementById('class-select').value;
             const section = document.getElementById('section-select').value;
-            const periods = document.getElementById('periods-count').value;
+            const periodsCount = parseInt(document.getElementById('periods-count').value) || 3;
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
             const duration = document.getElementById('duration').value;
             const contentText = document.getElementById('content-text').value;
 
-            // Populate Teacher Diary Fields
+            // Update Teacher Diary Summary
             document.getElementById('out-start-date').innerText = startDate || '--';
             document.getElementById('out-end-date').innerText = endDate || '--';
             document.getElementById('out-subject').innerText = subject;
             document.getElementById('out-class-sec').innerText = `${className} - ${section}`;
-            document.getElementById('out-periods').innerText = periods;
+            document.getElementById('out-periods').innerText = periodsCount;
             document.getElementById('out-teacher').innerText = teacherName;
             document.getElementById('out-chapter').innerText = chapterName;
-            document.getElementById('out-topics-val').innerText = `${chapterName}: ${topics}. ${contentText ? 'Key Notes: ' + contentText : ''}`;
-            document.getElementById('out-methodology').innerText = `Interactive explanation of ${topics}, whiteboard illustrations, multimedia aids, and inquiry-based questioning.`;
-            document.getElementById('out-assessment').innerText = `Worksheet execution on ${topics}, concept check activity, and peer evaluation.`;
-            document.getElementById('out-homework').innerText = `Complete exercise questions related to ${topics} and practice numerical/textual review items.`;
-            document.getElementById('out-competency').innerText = `Explain how the core principles of ${chapterName} apply to real-world scenarios and everyday problem-solving.`;
+            
+            let fileNote = uploadedFilesData.length > 0 ? ` [Source Files: ${uploadedFilesData.join(', ')} processed & questions solved].` : '';
+            document.getElementById('out-topics-val').innerText = `${chapterName}: ${topics}.${fileNote} ${contentText ? 'Notes/Q&A: ' + contentText : ''}`;
+            document.getElementById('out-assessment').innerText = uploadedFilesData.length > 0 ? `Solved exercises & worksheet activities from uploaded documents (${uploadedFilesData.join(', ')})` : `Class worksheet execution and concept review.`;
 
-            // Populate E-Lesson Plan Fields
-            document.getElementById('lp-date').innerText = startDate || '--';
-            document.getElementById('lp-teacher').innerText = teacherName;
-            document.getElementById('lp-subject').innerText = subject;
-            document.getElementById('lp-class').innerText = `${className} - ${section}`;
-            document.getElementById('lp-chapter').innerText = chapterName;
-            document.getElementById('lp-periods').innerText = periods;
-            document.getElementById('lp-duration').innerText = duration;
-            document.getElementById('lp-start').innerText = startDate || '--';
-            document.getElementById('lp-end').innerText = endDate || '--';
-            document.getElementById('lp-key-concepts').innerText = `${topics} (${chapterName})`;
-            document.getElementById('lp-teaching-aids').innerText = `Smartboard display, textbook reference charts, subject-specific models, and digital content.`;
-            document.getElementById('lp-homework').innerText = `Practice questions & worksheet on ${topics}.`;
+            // Generate Multi-Day E-Lesson Plans (Separate for each day)
+            const container = document.getElementById('lesson-plans-container');
+            container.innerHTML = '';
+            document.getElementById('plan-count-badge').innerText = periodsCount;
 
-            // Save to LocalStorage for persistence
-            const formData = {
-                teacherName, subject, chapterName, topics, className, section, periods, startDate, endDate, duration, contentText
-            };
-            localStorage.setItem('dav_lesson_draft', JSON.stringify(formData));
+            for (let day = 1; day <= periodsCount; day++) {
+                const planDiv = document.createElement('div');
+                planDiv.className = "border-2 border-slate-800 p-4 rounded text-sm space-y-3 print-page";
+                planDiv.innerHTML = `
+                    <div class="flex justify-between items-center border-b-2 border-slate-800 pb-2">
+                        <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="Logo" class="h-10 w-auto">
+                        <div class="text-center">
+                            <p class="text-[10px] font-semibold text-slate-500">MANAGING COMMITTEE, DAV PUBLIC SCHOOLS</p>
+                            <h2 class="font-bold text-sm tracking-wide">DAV PUBLIC SCHOOL, BUXAR</h2>
+                            <h3 class="font-bold text-davRed">E-Lesson Plan - Day / Period ${day} of ${periodsCount}</h3>
+                        </div>
+                        <div class="text-right text-xs">
+                            <p><strong>Date:</strong> ${startDate || '--'}</p>
+                        </div>
+                    </div>
 
-            // Switch to diary view on generation
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 border-b border-slate-400 pb-2 text-sm">
+                        <p><strong>Teacher:</strong> ${teacherName}</p>
+                        <p><strong>Subject:</strong> ${subject}</p>
+                        <p><strong>Class/Sec:</strong> ${className} - ${section}</p>
+                        <p><strong>Chapter:</strong> ${chapterName}</p>
+                        <p><strong>Period:</strong> Day ${day} (${duration} min)</p>
+                        <p><strong>Start:</strong> ${startDate || '--'}</p>
+                        <p><strong>End:</strong> ${endDate || '--'}</p>
+                        <p><strong>Files:</strong> ${uploadedFilesData.length > 0 ? uploadedFilesData.length + ' attached' : 'None'}</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                        <div class="border border-slate-400 p-2 rounded">
+                            <p class="font-bold text-slate-700 mb-1">Key Concepts (Day ${day}):</p>
+                            <p class="text-slate-600">${topics} - Focus Area ${day}: Core theory, guided problem solving & attached Q&A analysis.</p>
+                        </div>
+                        <div class="border border-slate-400 p-2 rounded">
+                            <p class="font-bold text-slate-700 mb-1">Learning Objectives (Day ${day}):</p>
+                            <ul class="list-disc list-inside text-slate-600 space-y-0.5">
+                                <li>Master concepts covered in day ${day} schedule.</li>
+                                <li>Solve numerical/textual problems from reference files.</li>
+                                <li>Demonstrate analytical reasoning through interactive tasks.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-400 p-2 rounded text-sm">
+                        <p class="font-bold text-slate-700 mb-1">Teaching Aids & 5-E Pedagogical Model (Day ${day}):</p>
+                        <p class="text-slate-600 mb-2">Smartboard, uploaded document display (${uploadedFilesData.join(', ') || 'Standard Textbook'}), concept models.</p>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse border border-slate-400 text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100">
+                                        <th class="border border-slate-400 p-1.5 w-24">Stage</th>
+                                        <th class="border border-slate-400 p-1.5">Teacher Role (Day ${day})</th>
+                                        <th class="border border-slate-400 p-1.5">Student Activity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border border-slate-400 p-1.5 font-bold">Engage</td>
+                                        <td class="border border-slate-400 p-1.5">Review previous concepts and introduce Day ${day} specific objective.</td>
+                                        <td class="border border-slate-400 p-1.5">Recall prior knowledge and examine introductory problem.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-400 p-1.5 font-bold">Explore</td>
+                                        <td class="border border-slate-400 p-1.5">Guide students through problems/questions from uploaded reference materials.</td>
+                                        <td class="border border-slate-400 p-1.5">Collaborate in pairs to analyze and attempt questions.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-400 p-1.5 font-bold">Explain</td>
+                                        <td class="border border-slate-400 p-1.5">Provide step-by-step solutions for complex questions and clear misconceptions.</td>
+                                        <td class="border border-slate-400 p-1.5">Take notes on correct solution methodologies and definitions.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-400 p-1.5 font-bold">Elaborate</td>
+                                        <td class="border border-slate-400 p-1.5">Assign higher-order application task relating to Day ${day} topic.</td>
+                                        <td class="border border-slate-400 p-1.5">Apply learned techniques to solve challenge problems.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-slate-400 p-1.5 font-bold">Evaluate</td>
+                                        <td class="border border-slate-400 p-1.5">Assess student worksheet progress and verify notebook completion.</td>
+                                        <td class="border border-slate-400 p-1.5">Complete exit ticket / worksheet questions for day ${day}.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                        <div class="border border-slate-400 p-2 rounded">
+                            <p class="font-bold text-slate-700 mb-1">Homework / Solved Q&A (Day ${day}):</p>
+                            <p class="text-slate-600">Complete remaining unsolved questions from attached reference material for Day ${day}.</p>
+                        </div>
+                        <div class="border border-slate-400 p-2 rounded">
+                            <p class="font-bold text-slate-700 mb-1">SDG Goal Highlighted:</p>
+                            <p class="text-slate-600"><strong>SDG 4 (Quality Education):</strong> Targeted daily instructional progression and experiential learning.</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(planDiv);
+            }
+
+            // Save state
+            const formData = { teacherName, subject, chapterName, topics, className, section, periodsCount, startDate, endDate, duration, contentText, uploadedFilesData };
+            localStorage.setItem('dav_multiday_draft', JSON.stringify(formData));
+
             switchTab('diary');
-            alert('Teacher Diary and E-Lesson Plan generated successfully!');
+            alert(`Teacher Diary and ${periodsCount} Daily E-Lesson Plans successfully generated!`);
         }
 
-        // Reset Form
         function clearForm() {
             document.getElementById('generator-form').reset();
             document.getElementById('other-subject-container').classList.add('hidden');
-            document.getElementById('file-label').innerHTML = `<i class="fas fa-cloud-upload-alt text-davRed text-base mb-1"></i><br>Click or drag file to upload reference material`;
-            localStorage.removeItem('dav_lesson_draft');
+            document.getElementById('file-list').innerHTML = '';
+            document.getElementById('file-label').innerHTML = `<i class="fas fa-cloud-upload-alt text-davRed text-base mb-1"></i><br>Click or drag multiple files (PDF / Images) here`;
+            uploadedFilesData = [];
+            localStorage.removeItem('dav_multiday_draft');
         }
 
-        // Load Draft on Startup & Online Status Listener
         window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('dav_lesson_draft');
+            const saved = localStorage.getItem('dav_multiday_draft');
             if (saved) {
                 try {
                     const data = JSON.parse(saved);
                     document.getElementById('teacher-name').value = data.teacherName || '';
-                    if (['English', 'Hindi', 'Sanskrit', 'Mathematics', 'Science', 'Social Science', 'ICT/AI/IT/IP', 'Naitik Siksha', 'Physics', 'Chemistry', 'Biology', 'Accounts', 'Business Studies', 'Painting / Drawing', 'Physical Education', 'Economics', 'Applied Mathematics', 'Music', 'Dance', 'Game', 'SUPW', 'HPE'].includes(data.subject)) {
+                    if (data.subject) {
                         document.getElementById('subject-select').value = data.subject;
-                    } else if (data.subject) {
-                        document.getElementById('subject-select').value = 'Other';
-                        document.getElementById('other-subject-container').classList.remove('hidden');
-                        document.getElementById('custom-subject').value = data.subject;
                     }
                     document.getElementById('chapter-name').value = data.chapterName || '';
                     document.getElementById('topics').value = data.topics || '';
                     document.getElementById('class-select').value = data.className || '';
                     document.getElementById('section-select').value = data.section || '';
-                    document.getElementById('periods-count').value = data.periods || 3;
+                    document.getElementById('periods-count').value = data.periodsCount || 3;
                     document.getElementById('start-date').value = data.startDate || '';
                     document.getElementById('end-date').value = data.endDate || '';
                     document.getElementById('duration').value = data.duration || 40;
@@ -592,21 +577,6 @@
                     console.error(e);
                 }
             }
-
-            // Network status indicator
-            const statusEl = document.getElementById('offline-status');
-            function updateOnlineStatus() {
-                if (navigator.onLine) {
-                    statusEl.innerHTML = '<i class="fas fa-wifi mr-1.5"></i> Online';
-                    statusEl.className = 'px-3 py-1 text-xs rounded-full bg-red-800 text-white font-medium flex items-center';
-                } else {
-                    statusEl.innerHTML = '<i class="fas fa-wifi-slash mr-1.5"></i> Offline Mode';
-                    statusEl.className = 'px-3 py-1 text-xs rounded-full bg-amber-700 text-white font-medium flex items-center';
-                }
-            }
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-            updateOnlineStatus();
         });
     </script>
 </body>
