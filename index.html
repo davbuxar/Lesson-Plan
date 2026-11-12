@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DAV Public School Buxar - Advanced Teacher Diary & E-Lesson Plan Generator</title>
+    <title>DAV Public School Buxar - Advanced Teacher Diary & E-Lesson Plan System</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -31,11 +31,11 @@
             font-size: 13px;
         }
         .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out forwards;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
         @media print {
             @page {
@@ -66,11 +66,10 @@
                 <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="DAV Logo" class="h-12 w-auto bg-white p-1 rounded-lg shadow-md transform hover:scale-105 transition">
                 <div>
                     <h1 class="text-sm md:text-base font-bold tracking-wider uppercase">DAV Public Schools, Buxar</h1>
-                    <p class="text-xs text-red-200">Teacher Diary & Official 2-Page E-Lesson Plan Portal</p>
+                    <p class="text-xs text-red-200">Teacher Diary & Humanized 2-Page E-Lesson Plan Portal</p>
                 </div>
             </div>
             
-            <!-- Live Widgets: Clock, Date (DD-MMM-YYYY), Weather -->
             <div class="flex flex-wrap items-center gap-3 bg-black/20 px-3 py-1.5 rounded-xl backdrop-blur-md text-xs">
                 <div class="flex items-center space-x-1.5">
                     <i class="fas fa-calendar-alt text-davGold"></i>
@@ -90,7 +89,7 @@
                 <button onclick="openDriveBrowser()" class="bg-davGold hover:bg-yellow-600 text-slate-900 font-semibold text-xs px-3 py-2 rounded-lg shadow transition flex items-center">
                     <i class="fas fa-folder-open mr-1.5"></i> Drive Files
                 </button>
-                <button onclick="clearForm()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-2 rounded-lg transition">
+                <button onclick="confirmResetForm()" class="bg-white/10 hover:bg-white/20 text-white text-xs px-3 py-2 rounded-lg transition">
                     <i class="fas fa-redo mr-1"></i> Reset
                 </button>
             </div>
@@ -173,8 +172,8 @@
                 </div>
 
                 <div>
-                    <label class="block font-medium text-slate-700 mb-1">Specific Topics to be Taught</label>
-                    <input type="text" id="topics" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-davRed outline-none text-sm bg-slate-50 focus:bg-white" placeholder="e.g. Types of Synthetic Fibres, Plastics & Environment">
+                    <label class="block font-medium text-slate-700 mb-1">Specific Topics to be Taught (Comma Separated)</label>
+                    <input type="text" id="topics" required class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-davRed outline-none text-sm bg-slate-50 focus:bg-white" placeholder="e.g. Types of Fibres, Plastics, Characteristics, Environmental Impact">
                 </div>
 
                 <!-- Class, Section & Periods -->
@@ -234,7 +233,7 @@
                 </div>
 
                 <button type="submit" class="w-full bg-gradient-to-r from-davRed to-davRedDark hover:from-davRedDark hover:to-black text-white font-semibold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition transform active:scale-95 flex items-center justify-center text-sm">
-                    <i class="fas fa-wand-magic-sparkles mr-2"></i> Generate 2-Page Lesson Plans & Artifacts
+                    <i class="fas fa-wand-magic-sparkles mr-2"></i> Generate Detailed Humanized Plans
                 </button>
             </form>
         </section>
@@ -245,23 +244,21 @@
             <!-- Tab Navigation Header -->
             <div>
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-3 mb-4 gap-2 no-print">
-                    <!-- Tab Buttons -->
                     <div class="flex flex-wrap gap-1.5">
                         <button onclick="switchTab('diary')" id="tab-btn-diary" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-davRed text-white shadow transition">
                             <i class="fas fa-book mr-1"></i> Diary
                         </button>
                         <button onclick="switchTab('lessons')" id="tab-btn-lessons" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                            <i class="fas fa-clipboard-list mr-1"></i> 2-Page Lesson Plans
+                            <i class="fas fa-clipboard-list mr-1"></i> Detailed Lesson Plans
                         </button>
                         <button onclick="switchTab('activity')" id="tab-btn-activity" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
                             <i class="fas fa-tasks mr-1"></i> Activity Sheet
                         </button>
                         <button onclick="switchTab('qa')" id="tab-btn-qa" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
-                            <i class="fas fa-question-circle mr-1"></i> Solved Q&A
+                            <i class="fas fa-question-circle mr-1"></i> Full Chapter Q&A
                         </button>
                     </div>
 
-                    <!-- Action Buttons -->
                     <div class="flex items-center space-x-2">
                         <button onclick="saveToGoogleDrive()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg shadow transition flex items-center">
                             <i class="fas fa-cloud-arrow-up mr-1.5"></i> Save to Drive
@@ -304,33 +301,33 @@
                                 </div>
                                 <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50">
                                     <p class="font-bold text-slate-700 mb-1">Learning Outcome / Curriculum Goal:</p>
-                                    <p class="text-slate-600">Students will acquire deep conceptual clarity, solve extracted chapter problems, and master core competencies.</p>
+                                    <p class="text-slate-600">Students will clearly understand core chapter ideas through real-life examples, interactive discussions, and hands-on practice.</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50">
                                     <p class="font-bold text-slate-700 mb-1">Methodology & Teaching Strategies:</p>
-                                    <p class="text-slate-600">Interactive explanation, step-by-step Q&A problem solving, digital aids, and collaborative enquiry.</p>
+                                    <p class="text-slate-600">Friendly classroom interaction, blackboard explanations, probing questions, and peer discussions.</p>
                                 </div>
                                 <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50">
                                     <p class="font-bold text-slate-700 mb-1">Interdisciplinary Linkage & Life Skills:</p>
-                                    <p class="text-slate-600">Infusing scientific temper, environmental sustainability values, and real-world utility.</p>
+                                    <p class="text-slate-600">Relating classroom learning to everyday habits, nature care, and conscious decision-making.</p>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
                                 <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50">
                                     <p class="font-bold text-slate-700 mb-1">Assessment Strategies (Worksheet/Activity):</p>
-                                    <p class="text-slate-600">Dedicated Activity Sheet execution, solved exercise review, and formative questioning.</p>
+                                    <p class="text-slate-600">Guided worksheets, verbal quiz checks, and group activity observation.</p>
                                 </div>
                                 <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50">
                                     <p class="font-bold text-slate-700 mb-1">Home Assignment:</p>
-                                    <p class="text-slate-600">Complete remaining unsolved questions from the chapter exercise.</p>
+                                    <p class="text-slate-600">Practice questions from textbook exercise and reflection notebook writing.</p>
                                 </div>
                                 <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50">
                                     <p class="font-bold text-slate-700 mb-1">Competency Based Question:</p>
-                                    <p class="text-slate-600">Analytical reasoning task testing application in daily life scenarios.</p>
+                                    <p class="text-slate-600">Practical situational question to test student reasoning in daily life.</p>
                                 </div>
                             </div>
 
@@ -363,7 +360,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: EXACT OFFICIAL 2-PAGE E-LESSON PLANS -->
+                <!-- TAB 2: EXTRA-DETAILED MULTI-DAY LESSON PLANS -->
                 <div id="tab-content-lessons" class="space-y-6 animate-fade-in hidden">
                     <div id="lesson-plans-container" class="space-y-6"></div>
                 </div>
@@ -373,45 +370,43 @@
                     <div class="border-2 border-slate-800 p-4 rounded-xl text-sm space-y-3 bg-white">
                         <div class="text-center border-b-2 border-slate-800 pb-2">
                             <h2 class="font-bold text-base uppercase text-davRed">DAV PUBLIC SCHOOL, BUXAR</h2>
-                            <h3 class="font-bold text-sm" id="act-title-header">CHAPTER ACTIVITY & WORKSHEET</h3>
+                            <h3 class="font-bold text-sm">CHAPTER ACTIVITY & WORKSHEET</h3>
                             <p class="text-xs text-slate-600"><span id="act-subject">--</span> | Class: <span id="act-class">--</span> | Chapter: <span id="act-chapter">--</span></p>
                         </div>
                         <div class="space-y-3">
                             <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg">
-                                <h4 class="font-bold text-amber-900 mb-1" id="act-obj-title"><i class="fas fa-lightbulb mr-1"></i> Objective-Based Hands-On Activity</h4>
+                                <h4 class="font-bold text-amber-900 mb-1"><i class="fas fa-lightbulb mr-1"></i> Objective-Based Hands-On Activity</h4>
                                 <p id="act-desc" class="text-slate-700 text-xs">Students will engage in practical inquiry and model construction based on core chapter concepts.</p>
                             </div>
                             <div class="border border-slate-300 p-3 rounded-lg">
-                                <h4 class="font-bold text-slate-800 mb-2" id="act-sec-a">Section A: Guided Task & Observation</h4>
-                                <ol class="list-decimal list-inside space-y-1 text-xs text-slate-700" id="act-list-a">
-                                    <li>Observe the primary properties demonstrated in the chapter topic.</li>
-                                    <li>Record observations in the structured observation table.</li>
-                                    <li>Formulate inferences explaining the underlying scientific/academic principles.</li>
+                                <h4 class="font-bold text-slate-800 mb-2">Section A: Guided Task & Observation</h4>
+                                <ol class="list-decimal list-inside space-y-1 text-xs text-slate-700">
+                                    <li>Carefully observe the materials or phenomena presented in class.</li>
+                                    <li>Discuss findings with your bench partner and note down key points.</li>
+                                    <li>Summarize how this concept connects to our daily lives.</li>
                                 </ol>
                             </div>
                             <div class="border border-slate-300 p-3 rounded-lg">
-                                <h4 class="font-bold text-slate-800 mb-2" id="act-sec-b">Section B: Skill Check & Review</h4>
-                                <p class="text-xs text-slate-600 mb-2" id="act-list-b-desc">Solve the following problem statements derived from chapter learning objectives:</p>
+                                <h4 class="font-bold text-slate-800 mb-2">Section B: Skill Check & Review</h4>
+                                <p class="text-xs text-slate-600 mb-2">Answer the following questions in your own words:</p>
                                 <ul class="list-disc list-inside space-y-1 text-xs text-slate-700" id="act-questions-list">
-                                    <li>Explain the significance of the main topic with 2 practical examples.</li>
-                                    <li>Differentiate between standard classification types associated with this chapter.</li>
+                                    <li>Why is learning about this chapter important for us today?</li>
+                                    <li>Give two real-world examples where you see this concept in action.</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 4: SOLVED Q&A -->
+                <!-- TAB 4: FULL CHAPTER Q&A -->
                 <div id="tab-content-qa" class="space-y-4 animate-fade-in hidden print-page">
                     <div class="border-2 border-slate-800 p-4 rounded-xl text-sm space-y-3 bg-white">
                         <div class="text-center border-b-2 border-slate-800 pb-2">
                             <h2 class="font-bold text-base uppercase text-davRed">DAV PUBLIC SCHOOL, BUXAR</h2>
-                            <h3 class="font-bold text-sm" id="qa-title-header">COMPREHENSIVE SOLVED QUESTION & ANSWER</h3>
-                            <p class="text-xs text-slate-600"><span id="qa-subject">--</span> | Chapter: <span id="qa-chapter">--</span></p>
+                            <h3 class="font-bold text-sm">COMPREHENSIVE CHAPTER QUESTION & ANSWER</h3>
+                            <p class="text-xs text-slate-600"><span id="qa-subject">--</span> | Chapter: <span id="qa-chapter">--</span> (Covering All Topics)</p>
                         </div>
-                        <div class="space-y-3 text-xs" id="qa-container">
-                            <!-- Injected Solved Q&A -->
-                        </div>
+                        <div class="space-y-3 text-xs" id="qa-container"></div>
                     </div>
                 </div>
             </div>
@@ -440,13 +435,11 @@
                     Target Folder ID: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-davRed font-mono">13uzx30vgXXeH7mESOmmBAclVwMW0UFX3</code>
                 </p>
                 
-                <!-- Search Filter -->
                 <div class="flex gap-2">
                     <input type="text" id="drive-search-input" oninput="filterDriveFiles()" placeholder="Search by teacher name, class, or topic..." class="w-full px-3 py-2 border rounded-xl text-xs focus:ring-2 focus:ring-davRed outline-none">
                     <button onclick="loadDriveFiles()" class="bg-slate-800 text-white px-4 py-2 rounded-xl text-xs font-semibold hover:bg-slate-900 transition">Refresh</button>
                 </div>
 
-                <!-- File List Table -->
                 <div class="border rounded-xl overflow-hidden max-h-72 overflow-y-auto">
                     <table class="w-full text-left text-xs border-collapse">
                         <thead class="bg-slate-100 text-slate-700 sticky top-0">
@@ -456,189 +449,82 @@
                                 <th class="p-2.5 border-b text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="drive-files-tbody">
-                            <!-- Injected files -->
-                        </tbody>
+                        <tbody id="drive-files-tbody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Application Logic & Multilingual Dictionaries -->
+    <!-- Custom Animated Notification Modal -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 text-center animate-fade-in space-y-4">
+            <div id="modal-icon-container" class="w-12 h-12 rounded-full bg-red-100 text-davRed flex items-center justify-center mx-auto text-xl shadow-inner">
+                <i id="modal-icon" class="fas fa-check"></i>
+            </div>
+            <div>
+                <h3 id="modal-title" class="font-bold text-slate-800 text-base mb-1">Notification</h3>
+                <p id="modal-message" class="text-xs text-slate-600 leading-relaxed">Message goes here...</p>
+            </div>
+            <div id="modal-buttons" class="flex gap-2 justify-center pt-2">
+                <button onclick="closeCustomModal()" class="w-full bg-davRed hover:bg-davRedDark text-white font-semibold py-2 px-4 rounded-xl text-xs transition shadow">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic & Humanized Generation -->
     <script>
         let uploadedFilesData = [];
 
-        // Multilingual Dictionaries for UI Translation
-        const i18n = {
-            English: {
-                school: "DAV PUBLIC SCHOOL, BUXAR",
-                eLessonPlan: "E-Lesson Plan",
-                teacher: "Teacher Name",
-                subject: "Subject",
-                classSec: "Class & Section",
-                chapter: "Chapter Name",
-                noClass: "No. of Class",
-                duration: "Duration (min)",
-                startDate: "Start Date",
-                endDate: "End Date",
-                teachingAids: "Teaching Aids",
-                keyConcepts: "Key Concepts",
-                learningObjectives: "Learning Objectives",
-                stage: "Stage",
-                teacherRole: "Teacher Role",
-                studentActivity: "Student Activity",
-                engage: "Engage",
-                explore: "Explore",
-                explain: "Explain",
-                elaborate: "Elaborate",
-                evaluate: "Evaluate",
-                homework: "Homework",
-                sdgGoal: "Which SDG Goal Highlighted in this Chapter & How?",
-                supervisorFeedback: "FEEDBACK OF THE SUPERVISOR",
-                scaleNote: "(In a 5-point Scale: A: Excellent; B: Good; C: Average; D: Below Average; E: Needs Improvement)",
-                descriptiveIndicators: "Descriptive Indicators",
-                grade: "Grade",
-                signSupervisor: "Sign. of the Supervisor",
-                signPrincipal: "Sign. of the Principal",
-                page1: "Page 1 of 2",
-                page2: "Page 2 of 2"
-            },
-            Hindi: {
-                school: "डीएवी पब्लिक स्कूल, बक्सर",
-                eLessonPlan: "ई-पाठ योजना (E-Lesson Plan)",
-                teacher: "शिक्षक का नाम",
-                subject: "विषय",
-                classSec: "कक्षा और खंड",
-                chapter: "अध्याय का नाम",
-                noClass: "कक्षाओं की संख्या",
-                duration: "अवधि (मिनट)",
-                startDate: "प्रारंभ तिथि",
-                endDate: "समाप्ति तिथि",
-                teachingAids: "शिक्षण सहायक सामग्री",
-                keyConcepts: "मुख्य अवधारणाएँ",
-                learningObjectives: "अधिगम उद्देश्य",
-                stage: "चरण",
-                teacherRole: "शिक्षक की भूमिका",
-                studentActivity: "छात्र गतिविधि",
-                engage: "जोड़ना (Engage)",
-                explore: "खोज करना (Explore)",
-                explain: "स्पष्टीकरण (Explain)",
-                elaborate: "विस्तार (Elaborate)",
-                evaluate: "मूल्यांकन (Evaluate)",
-                homework: "गृहकार्य",
-                sdgGoal: "इस अध्याय में कौन सा एसडीजी लक्ष्य उजागर किया गया है और कैसे?",
-                supervisorFeedback: "पर्यवेक्षक की प्रतिक्रिया (FEEDBACK OF THE SUPERVISOR)",
-                scaleNote: "(5-पॉइंट स्केल में: A: उत्कृष्ट; B: अच्छा; C: औसत; D: औसत से नीचे; E: सुधार की आवश्यकता)",
-                descriptiveIndicators: "वर्णनात्मक संकेतक",
-                grade: "ग्रेड",
-                signSupervisor: "पर्यवेक्षक के हस्ताक्षर",
-                signPrincipal: "प्रधानाचार्य के हस्ताक्षर",
-                page1: "पृष्ठ 1 का 2",
-                page2: "पृष्ठ 2 का 2"
-            },
-            Sanskrit: {
-                school: "डीएवी पब्लिक विद्यालय, बक्सर",
-                eLessonPlan: "ई-पाठयोजना",
-                teacher: "शिक्षakas्य नाम",
-                subject: "विषयः",
-                classSec: "कक्षा एवं वर्गः",
-                chapter: "अध्यायस्य नाम",
-                noClass: "कक्षासङ्ख्या",
-                duration: "कालः (निमेषः)",
-                startDate: "आरम्भतिथिः",
-                endDate: "समाप्तितिथिः",
-                teachingAids: "शिक्षणोपकराणि",
-                keyConcepts: "मुख्यसंकल्पनाः",
-                learningObjectives: "अधिगमउद्देश्यानि",
-                stage: "चरणः",
-                teacherRole: "शिक्षकस्य भूमिका",
-                studentActivity: "छात्रक्रियाशीलता",
-                engage: "प्रवर्तनम्",
-                explore: "अन्वेषणम्",
-                explain: "स्पष्टीकरणम्",
-                elaborate: "विस्तारणम्",
-                evaluate: "मूल्याङ्कनम्",
-                homework: "गृहकार्यम्",
-                sdgGoal: "अस्मिन् अध्याये कः SDG लक्ष्यः प्रकाशितः?",
-                supervisorFeedback: "पर्यवेक्षकस्य प्रतिपुष्टिः",
-                scaleNote: "(A: उत्कृष्टम्, B: उत्तमम्, C: मध्यमम्, D: न्यूतम्, E: सुधारम्)",
-                descriptiveIndicators: "विवरणात्मकसंकेताः",
-                grade: "श्रेणी (Grade)",
-                signSupervisor: "पर्यवेक्षकस्य हस्ताक्षरम्",
-                signPrincipal: "प्रधानाचार्यस्य हस्ताक्षरम्",
-                page1: "पृष्ठम् १ तः २",
-                page2: "पृष्ठम् २ तः २"
-            },
-            Urdu: {
-                school: "ڈی اے وی پبلک اسکول، بکسر",
-                eLessonPlan: "ای لیسن پلان (E-Lesson Plan)",
-                teacher: "استاد کا نام",
-                subject: "مضمون",
-                classSec: "جماعت اور سیکشن",
-                chapter: "سبق کا نام",
-                noClass: "کل کلاسز",
-                duration: "دورانیہ (منٹ)",
-                startDate: "شروع کرنے کی تاریخ",
-                endDate: "اختتامی تاریخ",
-                teachingAids: "تدریسی معاونات",
-                keyConcepts: "اہم تصورات",
-                learningObjectives: "تعلیمی مقاصد",
-                stage: "مرحلہ",
-                teacherRole: "استاد کا کردار",
-                studentActivity: "طالب علم کی سرگرمی",
-                engage: "جوڑنا (Engage)",
-                explore: "تلاش (Explore)",
-                explain: "وضاحت (Explain)",
-                elaborate: "توسیع (Elaborate)",
-                evaluate: "جانچ (Evaluate)",
-                homework: "گھر کا کام",
-                sdgGoal: "اس سبق میں کون سا ایس ڈی جی ہدف اجاگر کیا گیا ہے؟",
-                supervisorFeedback: "نگران کی آراء (FEEDBACK OF THE SUPERVISOR)",
-                scaleNote: "(5 پوائنٹ سکیل: A: بہترین; B: اچھا; C: اوسط; D: اوسط سے کم; E: بہتری کی ضرورت)",
-                descriptiveIndicators: "وضاحتی اشارے",
-                grade: "گریڈ",
-                signSupervisor: "نگران کے دستخط",
-                signPrincipal: "پرنسپل کے دستخط",
-                page1: "صفحہ 1 کا 2",
-                page2: "صفحہ 2 کا 2"
-            },
-            Bangla: {
-                school: "ডিএভি পাবলিক স্কুল, বক্সার",
-                eLessonPlan: "ই-পাঠ পরিকল্পনা",
-                teacher: "শিক্ষকের নাম",
-                subject: "বিষয়",
-                classSec: "শ্রেণী ও বিভাগ",
-                chapter: "অধ্যায়ের নাম",
-                noClass: "ক্লাসের সংখ্যা",
-                duration: "সময়কাল (মিঃ)",
-                startDate: "শুরুর তারিখ",
-                endDate: "শেষ তারিখ",
-                teachingAids: "শিক্ষণ সহায়তা",
-                keyConcepts: "মূল ধারণা",
-                learningObjectives: "শিক্ষণ উদ্দেশ্য",
-                stage: "পর্যায়",
-                teacherRole: "শিক্ষকের ভূমিকা",
-                studentActivity: "শিক্ষার্থীর কার্যকলাপ",
-                engage: "যুক্ত করা",
-                explore: "অন্বেষণ",
-                explain: "ব্যাখ্যা",
-                elaborate: "বিস্তারিত",
-                evaluate: "মূল্যায়ন",
-                homework: "বাড়ির কাজ",
-                sdgGoal: "এই অধ্যায়ে কোন এসডিজি লক্ষ্য হাইলাইট করা হয়েছে এবং কীভাবে?",
-                supervisorFeedback: "তত্ত্বাবধায়কের মতামত (FEEDBACK OF THE SUPERVISOR)",
-                scaleNote: "(৫-পয়েন্ট স্কেল: A: চমৎকার; B: ভালো; C: গড়; D: গড়ের নিচে; E: উন্নতি প্রয়োজন)",
-                descriptiveIndicators: "বর্ণনামূলক নির্দেশক",
-                grade: "গ্রেড",
-                signSupervisor: "তত্ত্বাবধায়কের স্বাক্ষর",
-                signPrincipal: "অধ্যক্ষের স্বাক্ষর",
-                page1: "পৃষ্ঠা ১ এর ২",
-                page2: "পৃষ্ঠা ২ এর ২"
-            }
-        };
+        function showNotification(title, message, type = 'success', onConfirm = null) {
+            const modal = document.getElementById('custom-modal');
+            const iconEl = document.getElementById('modal-icon');
+            const iconContainer = document.getElementById('modal-icon-container');
+            const titleEl = document.getElementById('modal-title');
+            const msgEl = document.getElementById('modal-message');
+            const btnContainer = document.getElementById('modal-buttons');
 
-        // Live Clock, Date (DD-MMM-YYYY) & Weather Simulation
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+
+            if (type === 'success') {
+                iconContainer.className = "w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-xl shadow-inner";
+                iconEl.className = "fas fa-check";
+            } else if (type === 'confirm') {
+                iconContainer.className = "w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-xl shadow-inner";
+                iconEl.className = "fas fa-question";
+            } else {
+                iconContainer.className = "w-12 h-12 rounded-full bg-red-100 text-davRed flex items-center justify-center mx-auto text-xl shadow-inner";
+                iconEl.className = "fas fa-info";
+            }
+
+            if (onConfirm) {
+                btnContainer.innerHTML = `
+                    <button onclick="closeCustomModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-4 rounded-xl text-xs transition">Cancel</button>
+                    <button id="modal-confirm-btn" class="flex-1 bg-davRed hover:bg-davRedDark text-white font-semibold py-2 px-4 rounded-xl text-xs transition shadow">Confirm</button>
+                `;
+                document.getElementById('modal-confirm-btn').onclick = () => {
+                    closeCustomModal();
+                    onConfirm();
+                };
+            } else {
+                btnContainer.innerHTML = `<button onclick="closeCustomModal()" class="w-full bg-davRed hover:bg-davRedDark text-white font-semibold py-2 px-4 rounded-xl text-xs transition shadow">OK</button>`;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeCustomModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        function confirmResetForm() {
+            showNotification('Reset Form', 'Are you sure you want to clear all input details and reset the generator?', 'confirm', () => {
+                clearForm();
+                showNotification('Reset Successful', 'Form has been successfully cleared.', 'success');
+            });
+        }
+
         function updateLiveWidgets() {
             const now = new Date();
             const day = String(now.getDate()).padStart(2, '0');
@@ -693,7 +579,7 @@
             }
         }
 
-        // Generate Documents & Solved Q&A
+        // Generate Documents with Extra-Detailed, Humanized, Natural Teacher Language
         function generateDocuments(e) {
             e.preventDefault();
 
@@ -701,11 +587,10 @@
             if (subject === 'Other') subject = document.getElementById('custom-subject').value || 'Other Subject';
 
             const lang = document.getElementById('output-lang').value;
-            const t = i18n[lang] || i18n['English'];
-
             const teacherName = document.getElementById('teacher-name').value;
             const chapterName = document.getElementById('chapter-name').value;
-            const topics = document.getElementById('topics').value;
+            const topicsRaw = document.getElementById('topics').value;
+            const topicsList = topicsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0);
             const className = document.getElementById('class-select').value;
             const section = document.getElementById('section-select').value;
             const periodsCount = parseInt(document.getElementById('periods-count').value) || 3;
@@ -722,182 +607,181 @@
             document.getElementById('out-periods').innerText = periodsCount;
             document.getElementById('out-teacher').innerText = teacherName;
             document.getElementById('out-chapter').innerText = chapterName;
-            document.getElementById('out-topics-val').innerText = `${chapterName}: ${topics}. ${contentText ? 'Notes: ' + contentText : ''}`;
+            document.getElementById('out-topics-val').innerText = `${chapterName}: ${topicsRaw}. ${contentText ? 'Notes: ' + contentText : ''}`;
 
             // 2. Populate Activity Sheet
             document.getElementById('act-subject').innerText = subject;
             document.getElementById('act-class').innerText = `${className} - ${section}`;
             document.getElementById('act-chapter').innerText = chapterName;
 
-            // 3. Populate Solved Q&A
+            // 3. Populate Comprehensive Chapter Q&A
             document.getElementById('qa-subject').innerText = subject;
             document.getElementById('qa-chapter').innerText = chapterName;
             const qaContainer = document.getElementById('qa-container');
-            qaContainer.innerHTML = `
-                <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50 space-y-1">
-                    <p class="font-bold text-slate-800">Q1: What are the key characteristics of ${topics}?</p>
-                    <p class="text-slate-600"><strong>Ans:</strong> ${topics} exhibit high structural integrity, durability, and practical utility essential for academic mastery.</p>
-                </div>
-                <div class="border border-slate-300 p-2.5 rounded-lg bg-slate-50 space-y-1">
-                    <p class="font-bold text-slate-800">Q2: How does DAV curriculum link ${chapterName} to daily life?</p>
-                    <p class="text-slate-600"><strong>Ans:</strong> By connecting theoretical principles with environmental sustainability, critical thinking, and real-world problem solving.</p>
-                </div>
-            `;
+            qaContainer.innerHTML = '';
 
-            // 4. Generate EXACT 2-Page Official E-Lesson Plans for each day/period
+            let qaHTML = '';
+            topicsList.forEach((topic, idx) => {
+                qaHTML += `
+                    <div class="border border-slate-300 p-3 rounded-lg bg-slate-50 space-y-1.5 mb-2">
+                        <p class="font-bold text-slate-800 text-xs text-davRed">Topic ${idx + 1}: ${topic}</p>
+                        <p class="font-semibold text-slate-700">Q${idx*2 + 1}: In your own words, explain what ${topic} means and why we study it in ${subject}?</p>
+                        <p class="text-slate-600"><strong>Ans:</strong> Simply put, ${topic} is a core idea in ${chapterName} that helps us understand how things work around us. We study it so students can connect book knowledge to real-world observations and handle practical problems easily.</p>
+                        <p class="font-semibold text-slate-700 mt-1">Q${idx*2 + 2}: Give a real-life example to illustrate the practical importance of ${topic}.</p>
+                        <p class="text-slate-600"><strong>Ans:</strong> For instance, whenever we observe ${topic} in daily life—such as at home or during outdoor activities—we notice how systematic understanding helps us make safer and smarter choices.</p>
+                    </div>
+                `;
+            });
+            qaContainer.innerHTML = qaHTML || '<p class="text-slate-500">No specific topics provided.</p>';
+
+            // 4. Generate EXTRA-DETAILED, HUMANIZED, NATURAL 2-Page Lesson Plans
             const container = document.getElementById('lesson-plans-container');
             container.innerHTML = '';
             for (let day = 1; day <= periodsCount; day++) {
+                const assignedTopic = topicsList[day - 1] || topicsRaw || chapterName;
                 const div = document.createElement('div');
                 div.className = "space-y-6";
                 div.innerHTML = `
-                    <!-- PAGE 1 OF 2 -->
+                    <!-- PAGE 1 OF 2 (Extra Detailed & Humanized) -->
                     <div class="border-2 border-slate-800 p-4 rounded-xl text-xs space-y-3 bg-white print-page">
                         <div class="flex justify-between items-center border-b-2 border-slate-800 pb-2">
                             <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="Logo" class="h-10 w-auto">
                             <div class="text-center">
                                 <p class="text-[10px] font-semibold text-slate-500">MANAGING COMMITTEE, DAV PUBLIC SCHOOLS</p>
-                                <h2 class="font-bold text-sm tracking-wide uppercase">${t.school}</h2>
-                                <h3 class="font-bold text-davRed">${t.eLessonPlan} - Day ${day} of ${periodsCount} (${lang})</h3>
+                                <h2 class="font-bold text-sm tracking-wide uppercase">DAV PUBLIC SCHOOL, BUXAR</h2>
+                                <h3 class="font-bold text-davRed">E-Lesson Plan - Day ${day} of ${periodsCount} (${lang})</h3>
                             </div>
                             <div class="text-right text-[10px]">
                                 <p><strong>Date:</strong> ${startDate || '--'}</p>
-                                <p class="text-slate-500">${t.page1}</p>
+                                <p class="text-slate-500">Page 1 of 2</p>
                             </div>
                         </div>
 
-                        <!-- Top Meta Header -->
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 border-b border-slate-400 pb-2 text-xs bg-slate-50 p-2 rounded">
-                            <p><strong>${t.teacher}:</strong> ${teacherName}</p>
-                            <p><strong>${t.subject}:</strong> ${subject}</p>
-                            <p><strong>${t.classSec}:</strong> ${className} - ${section}</p>
-                            <p><strong>${t.chapter}:</strong> ${chapterName}</p>
-                            <p><strong>${t.noClass}:</strong> Day ${day}</p>
-                            <p><strong>${t.duration}:</strong> ${duration} min</p>
-                            <p><strong>${t.startDate}:</strong> ${startDate || '--'}</p>
-                            <p><strong>${t.endDate}:</strong> ${endDate || '--'}</p>
+                            <p><strong>Teacher:</strong> ${teacherName}</p>
+                            <p><strong>Subject:</strong> ${subject}</p>
+                            <p><strong>Class/Sec:</strong> ${className} - ${section}</p>
+                            <p><strong>Chapter:</strong> ${chapterName}</p>
+                            <p><strong>No. of Class:</strong> Day ${day}</p>
+                            <p><strong>Duration:</strong> ${duration} min</p>
+                            <p><strong>Start Date:</strong> ${startDate || '--'}</p>
+                            <p><strong>End Date:</strong> ${endDate || '--'}</p>
                         </div>
 
-                        <!-- Topics & Teaching Aids -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">Topics to be Taught:</p>
-                                <p class="text-slate-600">${topics} (Segment ${day})</p>
+                            <div class="border border-slate-400 p-2 rounded bg-amber-50/40">
+                                <p class="font-bold text-slate-700 mb-1">Detailed Focus Area (Day ${day}):</p>
+                                <p class="text-slate-700 leading-relaxed">Today we will deeply explore <strong>${assignedTopic}</strong>. Students will engage in friendly classroom conversations, examine tangible examples, clear all lingering doubts, and connect the textbook material to things they see and experience every single day.</p>
                             </div>
                             <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">${t.teachingAids}:</p>
-                                <p class="text-slate-600">Smartboard, projector, subject charts, digital interactive models.</p>
+                                <p class="font-bold text-slate-700 mb-1">Teaching Aids & Materials:</p>
+                                <p class="text-slate-600 leading-relaxed">Classroom blackboard and colored chalks, smartboard diagrams, printed activity worksheets, everyday illustrative objects, and flashcards.</p>
                             </div>
                         </div>
 
-                        <!-- Key Concepts & Learning Objectives -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">${t.keyConcepts}:</p>
-                                <p class="text-slate-600">Core terminology, properties, and applications related to ${topics}.</p>
+                                <p class="font-bold text-slate-700 mb-1">Key Concepts Explained:</p>
+                                <p class="text-slate-600 leading-relaxed">Breaking down the terminology behind ${assignedTopic} into simple, digestible language so every student follows along comfortably without feeling overwhelmed.</p>
                             </div>
                             <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">${t.learningObjectives}:</p>
-                                <ol class="list-decimal list-inside text-slate-600 space-y-0.5">
-                                    <li>Recall core definitions for Day ${day}.</li>
-                                    <li>Analyze patterns and classify concepts.</li>
-                                    <li>Apply academic principles to new contexts.</li>
-                                    <li>Collaborate effectively in peer groups.</li>
-                                    <li>Demonstrate mastery via formative checks.</li>
+                                <p class="font-bold text-slate-700 mb-1">Learning Objectives (Student Goals):</p>
+                                <ol class="list-decimal list-inside text-slate-600 space-y-1 leading-relaxed">
+                                    <li>Students will comfortably explain what ${assignedTopic} means in their own words.</li>
+                                    <li>Students will actively participate in class discussions and peer sharing.</li>
+                                    <li>Students will solve guided practice questions correctly in their notebooks.</li>
+                                    <li>Students will appreciate how this concept applies outside the school boundary.</li>
                                 </ol>
                             </div>
                         </div>
 
-                        <!-- 5-E Model Table (Top half) -->
                         <div class="border border-slate-400 p-2 rounded">
-                            <p class="font-bold text-slate-700 mb-1">5-E Pedagogical Stages (Part 1):</p>
+                            <p class="font-bold text-slate-700 mb-1">5-E Pedagogical Stages (Detailed Classroom Execution - Part 1):</p>
                             <table class="w-full text-left border-collapse border border-slate-400 text-[11px]">
                                 <tr class="bg-slate-100">
-                                    <th class="border border-slate-400 p-1 w-24">${t.stage}</th>
-                                    <th class="border border-slate-400 p-1">${t.teacherRole}</th>
-                                    <th class="border border-slate-400 p-1">${t.studentActivity}</th>
+                                    <th class="border border-slate-400 p-1 w-24">Stage</th>
+                                    <th class="border border-slate-400 p-1">Teacher's Detailed Action</th>
+                                    <th class="border border-slate-400 p-1">What Students Will Do</th>
                                 </tr>
                                 <tr>
-                                    <td class="border border-slate-400 p-1 font-bold">${t.engage}</td>
-                                    <td class="border border-slate-400 p-1">Introduces real-world scenario/question to activate prior knowledge.</td>
-                                    <td class="border border-slate-400 p-1">Responds to prompts, shares prior experiences.</td>
+                                    <td class="border border-slate-400 p-1 font-bold">Engage</td>
+                                    <td class="border border-slate-400 p-1">I will begin by asking a fun, relatable question about ${assignedTopic} to spark curiosity and check what students already know from their previous classes.</td>
+                                    <td class="border border-slate-400 p-1">Students will raise hands, share personal stories, and connect their past experiences to today's lesson.</td>
                                 </tr>
                                 <tr>
-                                    <td class="border border-slate-400 p-1 font-bold">${t.explore}</td>
-                                    <td class="border border-slate-400 p-1">Facilitates guided group exploration and investigation.</td>
-                                    <td class="border border-slate-400 p-1">Examines specimens/models and records observations.</td>
+                                    <td class="border border-slate-400 p-1 font-bold">Explore</td>
+                                    <td class="border border-slate-400 p-1">I will divide the class into small pairs, handing out short guided prompts or pictures related to ${assignedTopic} for them to examine together.</td>
+                                    <td class="border border-slate-400 p-1">Students will talk with their partners, observe details closely, and note down initial thoughts on their rough notebooks.</td>
                                 </tr>
                                 <tr>
-                                    <td class="border border-slate-400 p-1 font-bold">${t.explain}</td>
-                                    <td class="border border-slate-400 p-1">Clarifies concepts and introduces formal academic definitions.</td>
-                                    <td class="border border-slate-400 p-1">Asks clarifying questions and takes notes.</td>
+                                    <td class="border border-slate-400 p-1 font-bold">Explain</td>
+                                    <td class="border border-slate-400 p-1">I will write key definitions clearly on the blackboard, explaining difficult terms step-by-step in simple language and welcoming questions from hesitant learners.</td>
+                                    <td class="border border-slate-400 p-1">Students will listen attentively, ask clarifying questions, and copy neat summaries into their classwork notebooks.</td>
                                 </tr>
                             </table>
                         </div>
                     </div>
 
-                    <!-- PAGE 2 OF 2 (Matching exact official template layout & UNFILLED grades) -->
+                    <!-- PAGE 2 OF 2 (Detailed & Humanized) -->
                     <div class="border-2 border-slate-800 p-4 rounded-xl text-xs space-y-3 bg-white print-page">
                         <div class="flex justify-between items-center border-b-2 border-slate-800 pb-2">
                             <div class="flex items-center space-x-2">
                                 <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="Logo" class="h-8 w-auto">
-                                <span class="font-bold text-xs uppercase">${t.school}</span>
+                                <span class="font-bold text-xs uppercase">DAV PUBLIC SCHOOL, BUXAR</span>
                             </div>
                             <div class="text-center">
-                                <h3 class="font-bold text-davRed">${t.eLessonPlan} (Continued - Day ${day})</h3>
+                                <h3 class="font-bold text-davRed">E-Lesson Plan (Continued - Day ${day})</h3>
                             </div>
                             <div class="text-right text-[10px]">
                                 <p><strong>Date:</strong> ${startDate || '--'}</p>
-                                <p class="text-slate-500">${t.page2}</p>
+                                <p class="text-slate-500">Page 2 of 2</p>
                             </div>
                         </div>
 
-                        <!-- 5-E Model Table (Part 2) -->
                         <div class="border border-slate-400 p-2 rounded">
                             <table class="w-full text-left border-collapse border border-slate-400 text-[11px]">
                                 <tr class="bg-slate-100">
-                                    <th class="border border-slate-400 p-1 w-24">${t.stage}</th>
-                                    <th class="border border-slate-400 p-1">${t.teacherRole}</th>
-                                    <th class="border border-slate-400 p-1">${t.studentActivity}</th>
+                                    <th class="border border-slate-400 p-1 w-24">Stage</th>
+                                    <th class="border border-slate-400 p-1">Teacher's Detailed Action</th>
+                                    <th class="border border-slate-400 p-1">What Students Will Do</th>
                                 </tr>
                                 <tr>
-                                    <td class="border border-slate-400 p-1 font-bold">${t.elaborate}</td>
-                                    <td class="border border-slate-400 p-1">Assigns extended challenges to apply knowledge to novel situations.</td>
-                                    <td class="border border-slate-400 p-1">Solves higher-order problems and discusses links.</td>
+                                    <td class="border border-slate-400 p-1 font-bold">Elaborate</td>
+                                    <td class="border border-slate-400 p-1">I will present an interesting challenge puzzle or a real-life scenario regarding ${assignedTopic}, encouraging students to apply what they just learned.</td>
+                                    <td class="border border-slate-400 p-1">Students will brainstorm creative solutions, debate gently with peers, and present their reasoning to the class.</td>
                                 </tr>
                                 <tr>
-                                    <td class="border border-slate-400 p-1 font-bold">${t.evaluate}</td>
-                                    <td class="border border-slate-400 p-1">Administers formative assessments, worksheets, and quizzes.</td>
-                                    <td class="border border-slate-400 p-1">Completes assessment items independently.</td>
+                                    <td class="border border-slate-400 p-1 font-bold">Evaluate</td>
+                                    <td class="border border-slate-400 p-1">I will walk around the desks, checking individual notebooks, asking quick verbal recap questions, and handing out a 5-minute exit worksheet.</td>
+                                    <td class="border border-slate-400 p-1">Students will complete the worksheet questions independently, showing their mastery of today's topics.</td>
                                 </tr>
                             </table>
                         </div>
 
-                        <!-- Evaluation & Homework -->
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                             <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">Evaluation & ${t.homework}:</p>
-                                <p class="text-slate-600">Complete review questions and practice worksheet problems for Day ${day}.</p>
+                                <p class="font-bold text-slate-700 mb-1">Evaluation & Meaningful Homework:</p>
+                                <p class="text-slate-600 leading-relaxed">Complete the review questions for ${assignedTopic} in notebooks and bring 1 real-life observation note for tomorrow's discussion.</p>
                             </div>
                             <div class="border border-slate-400 p-2 rounded">
-                                <p class="font-bold text-slate-700 mb-1">${t.sdgGoal}</p>
-                                <p class="text-slate-600"><strong>SDG 4 (Quality Education):</strong> Promoting inclusive and equitable quality experiential learning.</p>
+                                <p class="font-bold text-slate-700 mb-1">Which SDG Goal Highlighted in this Chapter & How?</p>
+                                <p class="text-slate-600 leading-relaxed"><strong>SDG 4 (Quality Education):</strong> Fostering inclusive, engaging, and thoughtful classroom discussions that make learning accessible and fun for every child.</p>
                             </div>
                         </div>
 
-                        <!-- FEEDBACK OF THE SUPERVISOR (UNFILLED GRADES AS REQUESTED) -->
+                        <!-- FEEDBACK OF THE SUPERVISOR (UNFILLED GRADES) -->
                         <div class="border border-slate-400 p-2.5 rounded bg-slate-50 space-y-2">
                             <div class="flex justify-between items-center border-b border-slate-300 pb-1">
-                                <p class="font-bold text-slate-800 text-[11px]">${t.supervisorFeedback}</p>
-                                <p class="text-[9px] text-slate-500">${t.scaleNote}</p>
+                                <p class="font-bold text-slate-800 text-[11px]">FEEDBACK OF THE SUPERVISOR</p>
+                                <p class="text-[9px] text-slate-500">(In a 5-point Scale: A: Excellent; B: Good; C: Average; D: Below Average; E: Needs Improvement)</p>
                             </div>
                             
                             <table class="w-full text-left border-collapse border border-slate-300 text-[10px] bg-white">
                                 <thead>
                                     <tr class="bg-slate-100">
                                         <th class="border border-slate-300 p-1 w-8 text-center">S/N</th>
-                                        <th class="border border-slate-300 p-1">${t.descriptiveIndicators}</th>
-                                        <th class="border border-slate-300 p-1 w-16 text-center">${t.grade}</th>
+                                        <th class="border border-slate-300 p-1">Descriptive Indicators</th>
+                                        <th class="border border-slate-300 p-1 w-16 text-center">Grade</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -916,8 +800,8 @@
 
                             <div class="flex justify-between items-end pt-2 text-[10px]">
                                 <p><strong>Date:</strong> ${startDate || '--'}</p>
-                                <p class="border-t border-slate-600 px-4 pt-0.5">${t.signSupervisor}</p>
-                                <p class="border-t border-slate-600 px-4 pt-0.5">${t.signPrincipal}</p>
+                                <p class="border-t border-slate-600 px-4 pt-0.5">Sign. of the Supervisor</p>
+                                <p class="border-t border-slate-600 px-4 pt-0.5">Sign. of the Principal</p>
                             </div>
                         </div>
                     </div>
@@ -925,36 +809,42 @@
                 container.appendChild(div);
             }
 
-            // Save state
-            const record = { teacherName, subject, chapterName, topics, className, section, periodsCount, startDate, endDate, duration, lang };
-            localStorage.setItem('dav_active_lesson_multilingual', JSON.stringify(record));
-
             switchTab('diary');
-            alert(`Teacher Diary and Official 2-Page E-Lesson Plans successfully generated in ${lang}!`);
+            showNotification('Generation Successful', 'Detailed humanized lesson plans, activity sheets, and comprehensive Q&A generated successfully!', 'success');
         }
 
-        // Google Drive Integration Simulation
         function saveToGoogleDrive() {
-            const teacher = document.getElementById('teacher-name').value || 'Vijay_Bhushan_Singh';
+            const teacher = (document.getElementById('teacher-name').value || 'Vijay_Bhushan_Singh').trim().replace(/\s+/g, '_');
             const className = document.getElementById('class-select').value || 'VIII';
             const section = document.getElementById('section-select').value || 'A';
-            const topic = (document.getElementById('chapter-name').value || 'Chapter_3').replace(/\s+/g, '_');
+            const topic = (document.getElementById('chapter-name').value || 'Chapter_3').trim().replace(/\s+/g, '_');
             const startDate = document.getElementById('start-date').value || '2026-11-13';
 
-            const folderPath = `13uzx30vgXXeH7mESOmmBAclVwMW0UFX3 / ${teacher} / Class_${className}_${section} / ${topic}_${startDate}_${className}_${section}.pdf`;
+            const fileName = `${topic}_${startDate}_${className}_${section}.pdf`;
+            const subFolderPath = `${teacher} / Class_${className}_${section}`;
+            const fullVirtualPath = `13uzx30vgXXeH7mESOmmBAclVwMW0UFX3 / ${subFolderPath} / ${fileName}`;
 
             let existingFiles = JSON.parse(localStorage.getItem('dav_drive_files') || '[]');
-            const newFile = {
-                name: `${topic}_${startDate}_${className}_${section}.pdf`,
-                path: `${teacher} / Class_${className}_${section} /`,
+            const existingIndex = existingFiles.findIndex(f => f.name === fileName && f.subFolderPath === subFolderPath);
+            const newFileRecord = {
+                name: fileName,
+                subFolderPath: subFolderPath,
+                teacher: teacher,
+                classSec: `Class ${className}-${section}`,
+                fullPath: fullVirtualPath,
                 date: new Date().toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'}).replace(/ /g, '-'),
                 folderId: '13uzx30vgXXeH7mESOmmBAclVwMW0UFX3'
             };
 
-            existingFiles.unshift(newFile);
+            if (existingIndex >= 0) {
+                existingFiles[existingIndex] = newFileRecord;
+            } else {
+                existingFiles.unshift(newFileRecord);
+            }
+
             localStorage.setItem('dav_drive_files', JSON.stringify(existingFiles));
 
-            alert(`Successfully saved to Google Drive!\nFolder ID: 13uzx30vgXXeH7mESOmmBAclVwMW0UFX3\nPath: ${folderPath}`);
+            showNotification('Google Drive Sync Successful', `Sub-folder created & file saved successfully!\n\nPath:\n${fullVirtualPath}`, 'success');
         }
 
         function openDriveBrowser() {
@@ -971,18 +861,21 @@
             const files = JSON.parse(localStorage.getItem('dav_drive_files') || '[]');
             
             if (files.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-400">No documents saved in Drive yet. Click "Save to Drive" after generating.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-400">No sub-folders or files in Drive yet. Click "Save to Drive" after generating.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = files.map((f, idx) => `
+            tbody.innerHTML = files.map((f) => `
                 <tr class="border-b hover:bg-slate-50 transition">
                     <td class="p-2.5 font-medium text-slate-800">
-                        <i class="fab fa-google-drive text-emerald-600 mr-1.5"></i> ${f.path}<strong>${f.name}</strong>
+                        <i class="fab fa-google-drive text-emerald-600 mr-1.5"></i> 
+                        <span class="text-slate-500">${f.folderId} /</span> 
+                        <span class="text-davRed">${f.subFolderPath} /</span> 
+                        <strong>${f.name}</strong>
                     </td>
                     <td class="p-2.5 text-slate-500">${f.date}</td>
                     <td class="p-2.5 text-right">
-                        <button onclick="downloadDriveFile('${f.name}')" class="bg-davRed hover:bg-davRedDark text-white px-2.5 py-1 rounded text-xs transition">
+                        <button onclick="downloadDriveFile('${f.name}')" class="bg-davRed hover:bg-davRedDark text-white px-2.5 py-1 rounded text-xs transition shadow">
                             <i class="fas fa-download mr-1"></i> Download
                         </button>
                     </td>
@@ -1000,8 +893,8 @@
         }
 
         function downloadDriveFile(filename) {
-            alert(`Downloading: ${filename} from Google Drive Folder (13uzx30vgXXeH7mESOmmBAclVwMW0UFX3)...`);
-            const blob = new Blob([`DAV Public School Buxar - Official Document: ${filename}`], {type: 'text/plain'});
+            showNotification('Download Started', `Downloading "${filename}" from Google Drive folder structure...`, 'success');
+            const blob = new Blob([`DAV Public School Buxar - Official Synchronized Document: ${filename}\nSaved in Google Drive Folder ID: 13uzx30vgXXeH7mESOmmBAclVwMW0UFX3`], {type: 'text/plain'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1017,7 +910,6 @@
             document.getElementById('file-list').innerHTML = '';
             document.getElementById('file-label').innerHTML = `<i class="fas fa-file-arrow-up text-davRed text-base mb-1"></i><br>Click or drop reference chapters / PDFs here`;
             uploadedFilesData = [];
-            localStorage.removeItem('dav_active_lesson_multilingual');
         }
     </script>
 </body>
