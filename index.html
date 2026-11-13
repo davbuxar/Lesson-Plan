@@ -19,6 +19,8 @@
             }
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -267,6 +269,8 @@
                         <button onclick="openEmailModal()" class="bg-gray-800 hover:bg-gray-900 text-white text-xs px-2.5 py-1.5 rounded-lg shadow transition flex items-center">
                             <i class="fas fa-envelope mr-1 text-amber-400"></i> Email
                         </button>
+                        <button onclick="printReport()" class="bg-gray-700 hover:bg-gray-800 text-white text-xs px-2.5 py-1.5 rounded-lg shadow transition flex items-center"><i class="fas fa-print mr-1"></i> Print All</button>
+                        <button onclick="printReport('tab')" class="bg-gray-500 hover:bg-gray-600 text-white text-xs px-2.5 py-1.5 rounded-lg shadow transition flex items-center"><i class="fas fa-print mr-1"></i> Print Tab</button>
                         <button onclick="downloadAsPDF()" class="bg-red-700 hover:bg-red-800 text-white text-xs px-2.5 py-1.5 rounded-lg shadow transition flex items-center">
                             <i class="fas fa-file-pdf mr-1"></i> PDF
                         </button>
@@ -277,145 +281,12 @@
                 </div>
 
                 <div id="save-status" class="hidden no-print text-xs bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-lg px-3 py-2"></div>
-                <!-- TAB 1: TEACHER DIARY SUMMARY -->
-                <div id="tab-content-diary" class="space-y-4 animate-fade-in print-page">
-                    <div class="p-4 rounded-xl text-sm space-y-3 bg-white text-black border border-gray-300 shadow-sm">
-                        <div class="text-center border-b-2 border-black pb-2 mb-3">
-                            <div class="flex justify-between items-center">
-                                <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="Logo" class="h-10 w-auto">
-                                <div>
-                                    <h2 id="report-school-name" class="font-bold text-sm tracking-wide uppercase text-black">DAV PUBLIC SCHOOL, BUXAR</h2>
-                                    <h3 class="font-bold text-xs text-black">TEACHER'S DIARY</h3>
-                                </div>
-                                <div class="text-right text-xs">
-                                    <p><strong>Date:</strong> <span id="out-start-date">--</span> to <span id="out-end-date">--</span></p>
-                                    <p><strong>Subject:</strong> <span id="out-subject">--</span></p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2 mb-3 border-b border-gray-400 pb-2 text-sm">
-                            <p><strong>Class & Section:</strong> <span id="out-class-sec">--</span></p>
-                            <p><strong>Period & Count:</strong> <span id="out-periods">--</span> Periods</p>
-                            <p><strong>Teacher Name:</strong> <span id="out-teacher">--</span></p>
-                            <p><strong>Chapter:</strong> <span id="out-chapter">--</span></p>
-                        </div>
-
-                        <div class="space-y-3 text-sm">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <div class="border border-gray-400 p-2.5 rounded-lg bg-gray-50">
-                                    <p class="font-bold text-black mb-1">Lesson / Topic:</p>
-                                    <p id="out-topics-val" class="text-black">--</p>
-                                </div>
-                                <div class="border border-gray-400 p-2.5 rounded-lg bg-gray-50">
-                                    <p class="font-bold text-black mb-1">Learning Outcome / Curriculum Goal:</p>
-                                    <p class="text-black">Students will clearly understand core chapter ideas through real-life examples, interactive discussions, and hands-on practice.</p>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <div class="border border-gray-400 p-2.5 rounded-lg bg-gray-50">
-                                    <p class="font-bold text-black mb-1">Methodology & Teaching Strategies:</p>
-                                    <p class="text-black">Friendly classroom interaction, blackboard explanations, probing questions, and peer discussions.</p>
-                                </div>
-                                <div class="border border-gray-400 p-2.5 rounded-lg bg-gray-50">
-                                    <p class="font-bold text-black mb-1">Interdisciplinary Linkage & Life Skills:</p>
-                                    <p class="text-black">Relating classroom learning to everyday habits, nature care, and conscious decision-making.</p>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                <div class="border border-gray-400 p-2.5 rounded-lg bg-gray-50">
-                                    <p class="font-bold text-black mb-1">Assessment Strategies:</p>
-                                    <p class="text-black">Guided worksheets, verbal quiz checks, and group activity observation.</p>
-                                </div>
-                                <div class="border border-gray-400 p-2.5 rounded-lg bg-gray-50">
-                                    <p class="font-bold text-black mb-1">Home Assignment:</p>
-                                    <p class="text-black">Practice questions from textbook exercise and reflection notebook writing.</p>
-                                </div>
-                                <div class="border border-gray-400 p-2.5 rounded-lg bg-gray-50">
-                                    <p class="font-bold text-black mb-1">Competency Based Question:</p>
-                                    <p class="text-black">Practical situational question to test student reasoning in daily life.</p>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2 border-t border-gray-400 pt-2 text-sm">
-                                <div>
-                                    <p><strong>Notebook (CW/HW) Checked?</strong> Yes [ ✔ ] / No [ &nbsp; ]</p>
-                                    <p class="mt-1"><strong>Topic Covered?</strong> Yes [ ✔ ] / No [ &nbsp; ]</p>
-                                </div>
-                                <div>
-                                    <p><strong>Principal's / Supervisor's Observation & Remark:</strong></p>
-                                    <div class="h-8 border-b border-dashed border-gray-400"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-between items-end mt-8 pt-4 border-t border-black text-xs">
-                            <div class="text-center">
-                                <div class="h-12"></div>
-                                <p class="border-t border-black px-4 pt-1 font-semibold" id="sig-teacher-name">Teacher Signature</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="h-12"></div>
-                                <p class="border-t border-black px-4 pt-1 font-semibold">I/C Academic</p>
-                            </div>
-                            <div class="text-center">
-                                <div class="h-12"></div>
-                                <p class="border-t border-black px-4 pt-1 font-semibold" id="sig-principal-name">Principal Signature</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 2: LESSON PLANS & TLM -->
-                <div id="tab-content-lessons" class="space-y-6 animate-fade-in hidden">
-                    <div id="lesson-plans-container" class="space-y-6"></div>
-                </div>
-
-                <!-- TAB 3: ACTIVITY SHEET -->
-                <div id="tab-content-activity" class="space-y-4 animate-fade-in hidden print-page">
-                    <div class="p-4 rounded-xl text-sm space-y-3 bg-white text-black border border-gray-300 shadow-sm">
-                        <div class="text-center border-b-2 border-black pb-2">
-                            <h2 class="font-bold text-base uppercase text-black" id="act-school-header">DAV PUBLIC SCHOOL, BUXAR</h2>
-                            <h3 class="font-bold text-sm text-black">CHAPTER ACTIVITY & WORKSHEET</h3>
-                            <p class="text-xs text-gray-700"><span id="act-subject">--</span> | Class: <span id="act-class">--</span> | Chapter: <span id="act-chapter">--</span></p>
-                        </div>
-                        <div class="space-y-3">
-                            <div class="bg-gray-100 border border-gray-400 p-3 rounded-lg">
-                                <h4 class="font-bold text-black mb-1"><i class="fas fa-lightbulb mr-1"></i> Objective-Based Hands-On Activity</h4>
-                                <p id="act-desc" class="text-black text-xs">Students will engage in practical inquiry and model construction based on core chapter concepts.</p>
-                            </div>
-                            <div class="border border-gray-400 p-3 rounded-lg">
-                                <h4 class="font-bold text-black mb-2">Section A: Guided Task & Observation</h4>
-                                <ol class="list-decimal list-inside space-y-1 text-xs text-black">
-                                    <li>Carefully observe the materials or phenomena presented in class.</li>
-                                    <li>Discuss findings with your bench partner and note down key points.</li>
-                                    <li>Summarize how this concept connects to our daily lives.</li>
-                                </ol>
-                            </div>
-                            <div class="border border-gray-400 p-3 rounded-lg">
-                                <h4 class="font-bold text-black mb-2">Section B: Skill Check & Review</h4>
-                                <p class="text-xs text-black mb-2">Answer the following questions in your own words:</p>
-                                <ul class="list-disc list-inside space-y-1 text-xs text-black" id="act-questions-list">
-                                    <li>Why is learning about this chapter important for us today?</li>
-                                    <li>Give two real-world examples where you see this concept in action.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 4: FULL CHAPTER Q&A -->
-                <div id="tab-content-qa" class="space-y-4 animate-fade-in hidden print-page">
-                    <div class="p-4 rounded-xl text-sm space-y-3 bg-white text-black border border-gray-300 shadow-sm">
-                        <div class="text-center border-b-2 border-black pb-2">
-                            <h2 class="font-bold text-base uppercase text-black" id="qa-school-header">DAV PUBLIC SCHOOL, BUXAR</h2>
-                            <h3 class="font-bold text-sm text-black">COMPREHENSIVE CHAPTER QUESTION & ANSWER</h3>
-                            <p class="text-xs text-gray-700"><span id="qa-subject">--</span> | Chapter: <span id="qa-chapter">--</span> (Covering All Topics)</p>
-                        </div>
-                        <div class="space-y-3 text-xs" id="qa-container"></div>
-                    </div>
+                
+                <div class="scr">
+                    <div id="tab-content-diary"><p class="text-center text-gray-500 py-16 text-sm">Fill the form and click <b>Generate CMYK Plans &amp; TLM</b> to see your pages here.</p></div>
+                    <div id="tab-content-lessons" class="hidden"></div>
+                    <div id="tab-content-activity" class="hidden"></div>
+                    <div id="tab-content-qa" class="hidden"></div>
                 </div>
             </div>
 
@@ -583,7 +454,7 @@
                 await api('email', {
                     to, subject: document.getElementById('email-subject-line').value,
                     body: document.getElementById('email-message-body').value,
-                    fileName: safeName(lastData.chapterName), html: buildReportHTML(lastData)
+                    fileName: safeName(lastData.chapterName), ...(await payloadFiles(lastData))
                 });
                 showNotification('Email Sent', `Diary and lesson plans (DOC + PDF) were sent to ${to}.`, 'success');
             } catch (err) { notifyFail(err); }
@@ -630,7 +501,9 @@
             }
         }
 
+        let currentTab = 'diary';
         function switchTab(tab) {
+            currentTab = tab;
             const tabs = ['diary', 'lessons', 'activity', 'qa'];
             const btns = {'diary': 'tab-btn-diary', 'lessons': 'tab-btn-lessons', 'activity': 'tab-btn-activity', 'qa': 'tab-btn-qa'};
             
@@ -679,272 +552,6 @@
             }
         }
 
-        function generateDocuments(e) {
-            e.preventDefault();
-
-            let subject = document.getElementById('subject-select').value;
-            if (subject === 'Other') subject = document.getElementById('custom-subject').value || 'Other Subject';
-
-            const schoolName = document.getElementById('school-name-input').value || 'DAV PUBLIC SCHOOL, BUXAR';
-            const principalName = document.getElementById('principal-name-input').value || 'V Anand Kumar';
-            const lang = document.getElementById('output-lang').value;
-            const teacherName = document.getElementById('teacher-name').value;
-            const chapterName = document.getElementById('chapter-name').value;
-            const topicsRaw = document.getElementById('topics').value;
-            const topicsList = topicsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0);
-            const className = document.getElementById('class-select').value;
-            const section = document.getElementById('section-select').value;
-            const periodsCount = parseInt(document.getElementById('periods-count').value) || 3;
-            const startDateRaw = document.getElementById('start-date').value;
-            const endDateRaw = document.getElementById('end-date').value;
-            const startDate = formatDateDDMMMYYYY(startDateRaw);
-            const endDate = formatDateDDMMMYYYY(endDateRaw);
-            const duration = document.getElementById('duration').value;
-            const contentText = document.getElementById('content-text').value;
-            if (startDateRaw && endDateRaw && endDateRaw < startDateRaw) {
-                showNotification('Check Dates', 'End date cannot be before the start date.', 'info');
-                return;
-            }
-            lastData = {schoolName, principalName, lang, teacherName, chapterName, topicsList, className, section, periodsCount, startDate, endDate, duration, contentText, subject};
-
-            document.getElementById('header-school-title').innerText = schoolName;
-            document.getElementById('report-school-name').innerText = schoolName;
-            document.getElementById('act-school-header').innerText = schoolName;
-            document.getElementById('qa-school-header').innerText = schoolName;
-
-            document.getElementById('sig-teacher-name').innerText = `${teacherName} (Teacher)`;
-            document.getElementById('sig-principal-name').innerText = `${principalName} (Principal)`;
-
-            document.getElementById('out-start-date').innerText = startDate;
-            document.getElementById('out-end-date').innerText = endDate;
-            document.getElementById('out-subject').innerText = subject;
-            document.getElementById('out-class-sec').innerText = `${className} - ${section}`;
-            document.getElementById('out-periods').innerText = periodsCount;
-            document.getElementById('out-teacher').innerText = teacherName;
-            document.getElementById('out-chapter').innerText = chapterName;
-            document.getElementById('out-topics-val').innerText = `${chapterName}: ${topicsRaw}. ${contentText ? 'Notes: ' + contentText : ''}`;
-
-            document.getElementById('act-subject').innerText = subject;
-            document.getElementById('act-class').innerText = `${className} - ${section}`;
-            document.getElementById('act-chapter').innerText = chapterName;
-
-            document.getElementById('qa-subject').innerText = subject;
-            document.getElementById('qa-chapter').innerText = chapterName;
-            const qaContainer = document.getElementById('qa-container');
-            qaContainer.innerHTML = '';
-
-            let qaHTML = '';
-            topicsList.forEach((topic, idx) => {
-                qaHTML += `
-                    <div class="border border-gray-400 p-3 rounded-lg bg-gray-50 space-y-1.5 mb-2 text-black">
-                        <p class="font-bold text-xs text-black uppercase">Topic ${idx + 1}: ${escapeHtml(topic)}</p>
-                        <p class="font-semibold text-black">Q${idx*2 + 1}: In your own words, explain what ${escapeHtml(topic)} means and why we study it in ${escapeHtml(subject)}?</p>
-                        <p class="text-gray-900"><strong>Ans:</strong> Simply put, ${escapeHtml(topic)} is a core idea in ${escapeHtml(chapterName)} that helps us understand how things work around us. We study it so students can connect book knowledge to real-world observations and handle practical problems easily.</p>
-                        <p class="font-semibold text-black mt-1">Q${idx*2 + 2}: Give a real-life example to illustrate the practical importance of ${escapeHtml(topic)}.</p>
-                        <p class="text-gray-900"><strong>Ans:</strong> For instance, whenever we observe ${escapeHtml(topic)} in daily life—such as at home or during outdoor activities—we notice how systematic understanding helps us make safer and smarter choices.</p>
-                    </div>
-                `;
-            });
-            qaContainer.innerHTML = qaHTML || '<p class="text-black">No specific topics provided.</p>';
-
-            const container = document.getElementById('lesson-plans-container');
-            container.innerHTML = '';
-            for (let day = 1; day <= periodsCount; day++) {
-                const assignedTopic = topicsList[day - 1] || topicsRaw || chapterName;
-                const activeImg = getContextualImage(subject, assignedTopic);
-
-                const div = document.createElement('div');
-                div.className = "space-y-6";
-                div.innerHTML = `
-                    <!-- PAGE 1 OF 2 -->
-                    <div class="p-4 rounded-xl text-xs space-y-3 bg-white text-black border border-gray-300 shadow-sm print-page">
-                        <div class="flex justify-between items-center border-b-2 border-black pb-2">
-                            <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="Logo" class="h-10 w-auto">
-                            <div class="text-center">
-                                <h2 class="font-bold text-sm tracking-wide uppercase text-black">${escapeHtml(schoolName)}</h2>
-                                <h3 class="font-bold text-black">E-Lesson Plan - Day ${day} of ${periodsCount} (${escapeHtml(lang)})</h3>
-                            </div>
-                            <div class="text-right text-[10px]">
-                                <p><strong>Date:</strong> ${escapeHtml(startDate)}</p>
-                                <p class="text-gray-700">Page 1 of 2</p>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 border-b border-gray-400 pb-2 text-xs bg-gray-50 p-2 rounded text-black">
-                            <p><strong>Teacher:</strong> ${escapeHtml(teacherName)}</p>
-                            <p><strong>Subject:</strong> ${escapeHtml(subject)}</p>
-                            <p><strong>Class/Sec:</strong> ${escapeHtml(className)} - ${escapeHtml(section)}</p>
-                            <p><strong>Chapter:</strong> ${escapeHtml(chapterName)}</p>
-                            <p><strong>Period:</strong> Day ${day}</p>
-                            <p><strong>Duration:</strong> ${escapeHtml(duration)} min</p>
-                            <p><strong>Start Date:</strong> ${escapeHtml(startDate)}</p>
-                            <p><strong>End Date:</strong> ${escapeHtml(endDate)}</p>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center border border-gray-400 p-2.5 rounded-lg bg-gray-50 text-black">
-                            <div class="sm:col-span-2 space-y-1">
-                                <p class="font-bold text-black">Detailed Focus Area (Day ${day}):</p>
-                                <p class="text-gray-900 leading-relaxed">Today we will deeply explore <strong>${escapeHtml(assignedTopic)}</strong>. Students will engage in friendly classroom conversations, examine tangible examples, clear all lingering doubts, and connect textbook material to everyday observations.</p>
-                            </div>
-                            <div class="text-center">
-                                <img src="${activeImg}" alt="Contextual Educational Visual" class="h-24 w-full object-cover rounded-lg shadow-sm border border-gray-400">
-                                <span class="text-[9px] text-gray-700 mt-0.5 block">Contextual Visual Aid</span>
-                            </div>
-                        </div>
-
-                        <div class="border border-gray-400 bg-gray-50 p-2.5 rounded-lg text-black">
-                            <p class="font-bold text-black mb-1"><i class="fas fa-tools mr-1"></i> TLM & Steps to Create TLM (Teaching Learning Material):</p>
-                            <ul class="list-disc list-inside space-y-0.5 text-gray-900 text-[11px]">
-                                <li><strong>Material Required:</strong> Chart paper, colorful sketch pens, recycled cardboard box, flashcards, and thread.</li>
-                                <li><strong>Step 1:</strong> Cut the chart paper into neat rectangular flashcards representing key keywords of ${escapeHtml(assignedTopic)}.</li>
-                                <li><strong>Step 2:</strong> Draw clear schematic diagrams or flowcharts illustrating the concept on the cardboard base.</li>
-                                <li><strong>Step 3:</strong> Use this interactive display model during class exploration to test student matching skills.</li>
-                            </ul>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-black">
-                            <div class="border border-gray-400 p-2 rounded">
-                                <p class="font-bold text-black mb-1">Key Concepts Explained:</p>
-                                <p class="text-gray-900 leading-relaxed">Breaking down terminology behind ${escapeHtml(assignedTopic)} into simple language so every student follows along comfortably.</p>
-                            </div>
-                            <div class="border border-gray-400 p-2 rounded">
-                                <p class="font-bold text-black mb-1">Learning Objectives (Student Goals):</p>
-                                <ol class="list-decimal list-inside text-gray-900 space-y-0.5 leading-relaxed">
-                                    <li>Explain ${escapeHtml(assignedTopic)} in own words.</li>
-                                    <li>Actively participate in group sharing.</li>
-                                    <li>Solve guided practice questions correctly.</li>
-                                </ol>
-                            </div>
-                        </div>
-
-                        <div class="border border-gray-400 p-2 rounded text-black">
-                            <p class="font-bold text-black mb-1">5-E Pedagogical Stages (Part 1):</p>
-                            <table class="w-full text-left border-collapse border border-gray-400 text-[11px]">
-                                <tr class="bg-gray-100 text-black">
-                                    <th class="border border-gray-400 p-1 w-24">Stage</th>
-                                    <th class="border border-gray-400 p-1">Teacher's Detailed Action</th>
-                                    <th class="border border-gray-400 p-1">What Students Will Do</th>
-                                </tr>
-                                <tr>
-                                    <td class="border border-gray-400 p-1 font-bold">Engage</td>
-                                    <td class="border border-gray-400 p-1">Ask a fun, relatable question about ${escapeHtml(assignedTopic)} to spark curiosity.</td>
-                                    <td class="border border-gray-400 p-1">Raise hands, share personal stories, and connect past experiences.</td>
-                                </tr>
-                                <tr>
-                                    <td class="border border-gray-400 p-1 font-bold">Explore</td>
-                                    <td class="border border-gray-400 p-1">Divide class into pairs, handing out TLM cards for examination.</td>
-                                    <td class="border border-gray-400 p-1">Talk with partners, observe details closely, and note thoughts.</td>
-                                </tr>
-                                <tr>
-                                    <td class="border border-gray-400 p-1 font-bold">Explain</td>
-                                    <td class="border border-gray-400 p-1">Write key definitions on blackboard, explaining step-by-step.</td>
-                                    <td class="border border-gray-400 p-1">Listen attentively, ask questions, and copy neat summaries.</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- PAGE 2 OF 2 -->
-                    <div class="p-4 rounded-xl text-xs space-y-3 bg-white text-black border border-gray-300 shadow-sm print-page">
-                        <div class="flex justify-between items-center border-b-2 border-black pb-2">
-                            <div class="flex items-center space-x-2">
-                                <img src="https://davrecruit.davcmc.in/CBT/logo.png" alt="Logo" class="h-8 w-auto">
-                                <span class="font-bold text-xs uppercase text-black">${escapeHtml(schoolName)}</span>
-                            </div>
-                            <div class="text-center">
-                                <h3 class="font-bold text-black">E-Lesson Plan (Continued - Day ${day})</h3>
-                            </div>
-                            <div class="text-right text-[10px]">
-                                <p><strong>Date:</strong> ${escapeHtml(startDate)}</p>
-                                <p class="text-gray-700">Page 2 of 2</p>
-                            </div>
-                        </div>
-
-                        <div class="border border-gray-400 p-2 rounded text-black">
-                            <table class="w-full text-left border-collapse border border-gray-400 text-[11px]">
-                                <tr class="bg-gray-100 text-black">
-                                    <th class="border border-gray-400 p-1 w-24">Stage</th>
-                                    <th class="border border-gray-400 p-1">Teacher's Detailed Action</th>
-                                    <th class="border border-gray-400 p-1">What Students Will Do</th>
-                                </tr>
-                                <tr>
-                                    <td class="border border-gray-400 p-1 font-bold">Elaborate</td>
-                                    <td class="border border-gray-400 p-1">Present a challenge puzzle regarding ${escapeHtml(assignedTopic)} for teamwork.</td>
-                                    <td class="border border-gray-400 p-1">Brainstorm solutions, debate gently with peers, and present reasoning.</td>
-                                </tr>
-                                <tr>
-                                    <td class="border border-gray-400 p-1 font-bold">Evaluate</td>
-                                    <td class="border border-gray-400 p-1">Walk around desks checking notebooks and handing out exit slips.</td>
-                                    <td class="border border-gray-400 p-1">Complete worksheet questions independently showing mastery.</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-black">
-                            <div class="border border-gray-400 p-2 rounded">
-                                <p class="font-bold text-black mb-1">Evaluation & Meaningful Homework:</p>
-                                <p class="text-gray-900 leading-relaxed">Complete review questions for ${escapeHtml(assignedTopic)} in notebooks and bring 1 real-life observation note.</p>
-                            </div>
-                            <div class="border border-gray-400 p-2 rounded">
-                                <p class="font-bold text-black mb-1">Which SDG Goal Highlighted & How?</p>
-                                <p class="text-gray-900 leading-relaxed"><strong>SDG 4 (Quality Education):</strong> Fostering inclusive, engaging classroom discussions making learning accessible.</p>
-                            </div>
-                        </div>
-
-                        <!-- FEEDBACK OF THE SUPERVISOR (UNFILLED GRADES) -->
-                        <div class="border border-gray-400 p-2.5 rounded bg-gray-50 space-y-2 text-black">
-                            <div class="flex justify-between items-center border-b border-gray-400 pb-1">
-                                <p class="font-bold text-black text-[11px]">FEEDBACK OF THE SUPERVISOR</p>
-                                <p class="text-[9px] text-gray-700">(In a 5-point Scale: A: Excellent; B: Good; C: Average; D: Below Average; E: Needs Improvement)</p>
-                            </div>
-                            
-                            <table class="w-full text-left border-collapse border border-gray-400 text-[10px] bg-white">
-                                <thead>
-                                    <tr class="bg-gray-100 text-black">
-                                        <th class="border border-gray-400 p-1 w-8 text-center">S/N</th>
-                                        <th class="border border-gray-400 p-1">Descriptive Indicators</th>
-                                        <th class="border border-gray-400 p-1 w-16 text-center">Grade</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td class="border border-gray-400 p-1 text-center">1</td><td class="border border-gray-400 p-1">Lesson includes engaging introductory activity or question related to topic.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">2</td><td class="border border-gray-400 p-1">Activity activates prior knowledge and interest required for success.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">3</td><td class="border border-gray-400 p-1">Lesson provides opportunity to explore concepts through investigations.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">4</td><td class="border border-gray-400 p-1">Components allow clear understanding through student-driven exploration.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">5</td><td class="border border-gray-400 p-1">Lesson provides opportunity to share/collaborate in small/whole groups.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">6</td><td class="border border-gray-400 p-1">Teacher acts as facilitator.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">7</td><td class="border border-gray-400 p-1">Lesson provides opportunity to clarify and elaborate to deepen vocabulary.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">8</td><td class="border border-gray-400 p-1">Students are given activity to reinforce concepts to new situations.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">9</td><td class="border border-gray-400 p-1">Lesson includes formative and summative assessments.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                    <tr><td class="border border-gray-400 p-1 text-center">10</td><td class="border border-gray-400 p-1">Lesson includes exact questions and location of formative assessments.</td><td class="border border-gray-400 p-1 text-center">&nbsp;</td></tr>
-                                </tbody>
-                            </table>
-
-                            <div class="flex justify-between items-end mt-8 pt-4 border-t border-black text-[10px]">
-                                <div class="text-center">
-                                    <div class="h-10"></div>
-                                    <p class="border-t border-black px-4 pt-1 font-semibold">${escapeHtml(teacherName)} (Teacher)</p>
-                                </div>
-                                <div class="text-center">
-                                    <div class="h-10"></div>
-                                    <p class="border-t border-black px-4 pt-1 font-semibold">Sign. of the Supervisor</p>
-                                </div>
-                                <div class="text-center">
-                                    <div class="h-10"></div>
-                                    <p class="border-t border-black px-4 pt-1 font-semibold">${escapeHtml(principalName)} (Principal)</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(div);
-            }
-
-            switchTab('diary');
-            showNotification('Generation Successful', 'Detailed CMYK humanized lesson plans, TLM, and activity sheets generated successfully!', 'success');
-        }
-
-
         function escapeHtml(v) {
             return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
@@ -956,70 +563,188 @@
             showNotification('Generate First', 'Please fill the form and click "Generate CMYK Plans & TLM" first.', 'info');
             return false;
         }
-
-        // Complete report (all sections) as plain HTML: used for PDF, DOC, Drive and Email
-        function buildReportHTML(d) {
-            const e = escapeHtml, T = d.topicsList.length ? d.topicsList : [d.chapterName];
-            const head = (t) => `<table class="h"><tr><td style="width:20%"><b>Date:</b> ${e(d.startDate)} to ${e(d.endDate)}</td><td style="text-align:center"><h2>${e(d.schoolName)}</h2><b>${t}</b></td><td style="width:20%"><b>Class:</b> ${e(d.className)}-${e(d.section)}<br><b>Subject:</b> ${e(d.subject)}</td></tr></table>`;
-            const sign = `<table class="n"><tr><td align="center"><br><br>${e(d.teacherName)}<br>(Teacher)</td><td align="center"><br><br>I/C Academic</td><td align="center"><br><br>${e(d.principalName)}<br>(Principal)</td></tr></table>`;
-            let h = `<html><head><meta charset="utf-8"><title>${e(d.chapterName)}</title><style>
-                @page{size:A4;margin:1in} body{font-family:Arial,sans-serif;font-size:13px;color:#000}
-                table{border-collapse:collapse;width:100%;margin:6px 0} td,th{border:1px solid #000;padding:4px;vertical-align:top;text-align:left}
-                table.n td,table.h td{border:none} h2{margin:0;font-size:16px} h3{margin:10px 0 4px;font-size:14px} .pb{page-break-before:always}</style></head><body>`;
-            h += head("TEACHER'S DIARY") + `<table><tr><td><b>Teacher:</b> ${e(d.teacherName)}</td><td><b>Chapter:</b> ${e(d.chapterName)}</td></tr>
-                <tr><td><b>Periods:</b> ${d.periodsCount} (${e(d.duration)} min)</td><td><b>Language:</b> ${e(d.lang)}</td></tr>
-                <tr><td colspan="2"><b>Lesson / Topic:</b> ${e(d.chapterName)}: ${e(T.join(', '))}. ${d.contentText ? 'Notes: ' + e(d.contentText) : ''}</td></tr>
-                <tr><td colspan="2"><b>Learning Outcome:</b> Students will clearly understand core chapter ideas through real-life examples, interactive discussions and hands-on practice.</td></tr>
-                <tr><td><b>Methodology:</b> Classroom interaction, blackboard explanation, probing questions, peer discussion.</td><td><b>Assessment:</b> Guided worksheets, verbal quiz checks, group activity observation.</td></tr>
-                <tr><td><b>Home Assignment:</b> Textbook exercise and reflection notebook writing.</td><td><b>Competency Based Question:</b> Practical situational question on daily life.</td></tr>
-                <tr><td colspan="2"><b>Principal's / Supervisor's Remark:</b><br><br></td></tr></table>${sign}`;
-            for (let day = 1; day <= d.periodsCount; day++) {
-                const t = e(T[day - 1] || d.topicsList.join(', ') || d.chapterName);
-                h += `<div class="pb"></div>${head(`E-LESSON PLAN - DAY ${day} OF ${d.periodsCount}`)}
-                    <table><tr><td><b>Teacher:</b> ${e(d.teacherName)}</td><td><b>Chapter:</b> ${e(d.chapterName)}</td></tr></table>
-                    <h3>Detailed Focus Area</h3><p>Today we will explore <b>${t}</b> through classroom conversation, tangible examples, doubt clearing and links to everyday life.</p>
-                    <h3>TLM &amp; Steps to Create TLM</h3><ul><li>Material: chart paper, sketch pens, cardboard, flashcards, thread.</li><li>Step 1: Cut chart paper into flashcards of key words of ${t}.</li><li>Step 2: Draw a diagram or flowchart on the cardboard base.</li><li>Step 3: Use the model in class to test student matching skills.</li></ul>
-                    <h3>Learning Objectives</h3><ol><li>Explain ${t} in own words.</li><li>Participate actively in group sharing.</li><li>Solve guided practice questions correctly.</li></ol>
-                    <h3>5-E Stages</h3><table><tr><th style="width:15%">Stage</th><th>Teacher's Action</th><th>Students' Action</th></tr>
-                    <tr><td>Engage</td><td>Ask a relatable question about ${t}.</td><td>Share experiences, raise hands.</td></tr>
-                    <tr><td>Explore</td><td>Pair students and hand out TLM cards.</td><td>Observe, talk with partners, note thoughts.</td></tr>
-                    <tr><td>Explain</td><td>Write key definitions and explain stepwise.</td><td>Listen, ask questions, copy summaries.</td></tr>
-                    <tr><td>Elaborate</td><td>Present a challenge puzzle on ${t}.</td><td>Brainstorm and present reasoning.</td></tr>
-                    <tr><td>Evaluate</td><td>Check notebooks, give exit slips.</td><td>Complete worksheet independently.</td></tr></table>
-                    <p><b>Homework:</b> Review questions on ${t} and one real-life observation note.</p>
-                    <p><b>SDG 4 (Quality Education):</b> Inclusive, engaging discussion that makes learning accessible.</p>
-                    <p><b>Supervisor Feedback (A-E):</b> Grade ______ &nbsp; Remarks: ______________________________</p>${sign}`;
-            }
-            h += `<div class="pb"></div>${head('CHAPTER ACTIVITY &amp; WORKSHEET')}<h3>Hands-On Activity</h3><p>Students will engage in practical inquiry and model building based on ${e(d.chapterName)}.</p>
-                <ol><li>Observe the materials or phenomena shown in class.</li><li>Discuss findings with your bench partner and note key points.</li><li>Summarize how this concept connects to daily life.</li></ol>
-                <h3>Skill Check</h3><ul><li>Why is learning this chapter important for us today?</li><li>Give two real-world examples of this concept.</li></ul>`;
-            h += `<div class="pb"></div>${head('COMPREHENSIVE CHAPTER Q&amp;A')}`;
-            T.forEach((t, i) => {
-                h += `<p><b>Topic ${i + 1}: ${e(t)}</b><br><b>Q${i * 2 + 1}:</b> In your own words, explain what ${e(t)} means and why we study it in ${e(d.subject)}.<br><b>Ans:</b> ${e(t)} is a core idea in ${e(d.chapterName)} that helps us understand how things work around us and connect book knowledge to real life.<br>
-                    <b>Q${i * 2 + 2}:</b> Give a real-life example showing the importance of ${e(t)}.<br><b>Ans:</b> Whenever we notice ${e(t)} at home or outdoors, systematic understanding helps us make safer and smarter choices.</p>`;
-            });
-            return h + '</body></html>';
-        }
-
-        function downloadAsPDF() {
-            if (!needGenerated()) return;
-            showNotification('PDF Export', 'In the print window choose "Save as PDF" as the destination.', 'success');
-            const f = document.createElement('iframe');
-            f.style.cssText = 'position:fixed;width:0;height:0;border:0;';
-            f.onload = () => { setTimeout(() => { f.contentWindow.focus(); f.contentWindow.print(); }, 300); setTimeout(() => f.remove(), 60000); };
-            f.srcdoc = buildReportHTML(lastData);
-            document.body.appendChild(f);
-        }
-
-        function downloadAsDOCX() {
-            if (!needGenerated()) return;
-            saveBlob(new Blob(['\ufeff' + buildReportHTML(lastData)], {type: 'application/msword'}), safeName(lastData.chapterName) + '.doc');
-            showNotification('DOC Export', 'Complete report downloaded as a Word (.doc) file.', 'success');
-        }
         function saveBlob(blob, name) {
             const url = URL.createObjectURL(blob), a = document.createElement('a');
             a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
             setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+
+        // =====================================================================
+        // ONE template for screen, print, PDF, DOC, Drive and Email  => 100% same
+        // If the logo is missing in the PDF, upload logo.png to your GitHub repo and set LOGO = 'logo.png'
+        // =====================================================================
+        const LOGO = 'https://davrecruit.davcmc.in/CBT/logo.png';
+        const PAGE_CSS = `
+.pg{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#000;background:#fff}
+.pg *{font-family:Arial,Helvetica,sans-serif}
+.pg table{border-collapse:collapse;width:100%;border:0}
+.pg td,.pg th{vertical-align:top;text-align:left;padding:0;border:0;font-size:12px}
+.pg p{margin:0 0 4px}
+.pg ul{list-style:disc;margin:2px 0 0;padding-left:18px}
+.pg ol{list-style:decimal;margin:2px 0 0;padding-left:18px}
+.pg li{margin:0 0 2px;display:list-item}
+.pg img{display:block}
+.pg .hd{border-bottom:2px solid #000;margin-bottom:8px}
+.pg .hd td{padding-bottom:6px;vertical-align:middle}
+.pg .sc{font-size:14px;font-weight:bold;text-transform:uppercase}
+.pg .tt{font-size:12px;font-weight:bold}
+.pg .bx{border:1px solid #9ca3af;background:#f9fafb;padding:8px}
+.pg .bw{border:1px solid #9ca3af;padding:8px}
+.pg .m{margin-top:8px}
+.pg .gt td,.pg .gt th{border:1px solid #9ca3af;padding:4px;font-size:11px}
+.pg .gt th{background:#f3f4f6;font-weight:bold}
+.pg .sig{border-top:1px solid #000;padding:3px 10px;font-weight:bold;font-size:11px;text-align:center;margin:0 6px}
+.pg .cap{font-size:9px;color:#374151;text-align:center}
+.pg .sm{font-size:10px;text-align:right}`;
+        const SCREEN_CSS = `.scr .pg{width:634px;max-width:100%;box-sizing:border-box;padding:16px;margin:0 auto 16px;border:1px solid #d1d5db;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.12)}`;
+        const REPORT_CSS = `@page{size:A4;margin:1in} body{margin:0;background:#fff} .pg{page-break-after:always} .pg:last-child{page-break-after:auto}`;
+
+        (function(){ const st = document.createElement('style'); st.textContent = PAGE_CSS + SCREEN_CSS; document.head.appendChild(st); })();
+        const FEEDBACK = ['Lesson includes engaging introductory activity or question related to topic.','Activity activates prior knowledge and interest required for success.','Lesson provides opportunity to explore concepts through investigations.','Components allow clear understanding through student-driven exploration.','Lesson provides opportunity to share/collaborate in small/whole groups.','Teacher acts as facilitator.','Lesson provides opportunity to clarify and elaborate to deepen vocabulary.','Students are given activity to reinforce concepts to new situations.','Lesson includes formative and summative assessments.','Lesson includes exact questions and location of formative assessments.'];
+        const dayTopic = (d, day) => d.topicsList[day - 1] || d.topicsList.join(', ') || d.chapterName;
+
+        function pagesHTML(d, embed) {
+            const e = escapeHtml, T = d.topicsList.length ? d.topicsList : [d.chapterName];
+            const im = u => (embed && d.imgData && d.imgData[u]) || u;
+            const hdr = (title, right, sub) => `<table class="hd"><tr><td style="width:18%"><img src="${im(LOGO)}" alt="" style="height:40px"></td><td style="text-align:center"><div class="sc">${e(d.schoolName)}</div><div class="tt">${title}</div>${sub ? `<div class="cap">${sub}</div>` : ''}</td><td style="width:22%" class="sm">${right}</td></tr></table>`;
+            const cols = (...c) => { const w = (100 - (c.length - 1) * 2) / c.length; return `<table class="m"><tr>` + c.map((x, i) => `${i ? '<td style="width:2%"></td>' : ''}<td class="bx" style="width:${w}%">${x}</td>`).join('') + `</tr></table>`; };
+            const sign = `<table style="margin-top:30px"><tr><td style="width:33%"><div class="sig">${e(d.teacherName)} (Teacher)</div></td><td style="width:34%"><div class="sig">I/C Academic</div></td><td style="width:33%"><div class="sig">${e(d.principalName)} (Principal)</div></td></tr></table>`;
+            const cs = `${e(d.className)} - ${e(d.section)}`, dates = `<b>Date:</b> ${e(d.startDate)}`;
+            const row5 = (s, a, b) => `<tr><td><b>${s}</b></td><td>${a}</td><td>${b}</td></tr>`;
+            const th5 = `<tr><th style="width:15%">Stage</th><th>Teacher's Detailed Action</th><th>What Students Will Do</th></tr>`;
+            const out = {diary: '', lessons: '', activity: '', qa: ''};
+
+            out.diary = `<div class="pg">${hdr("TEACHER'S DIARY", `<b>Date:</b> ${e(d.startDate)} to ${e(d.endDate)}<br><b>Subject:</b> ${e(d.subject)}`)}
+                <div class="bx"><table><tr><td style="width:50%"><b>Class &amp; Section:</b> ${cs}</td><td><b>Period &amp; Count:</b> ${d.periodsCount} Periods</td></tr><tr><td><b>Teacher Name:</b> ${e(d.teacherName)}</td><td><b>Chapter:</b> ${e(d.chapterName)}</td></tr></table></div>
+                ${cols(`<b>Lesson / Topic:</b><br>${e(d.chapterName)}: ${e(T.join(', '))}. ${d.contentText ? 'Notes: ' + e(d.contentText) : ''}`, `<b>Learning Outcome / Curriculum Goal:</b><br>Students will clearly understand core chapter ideas through real-life examples, interactive discussions and hands-on practice.`)}
+                ${cols(`<b>Methodology &amp; Teaching Strategies:</b><br>Friendly classroom interaction, blackboard explanations, probing questions and peer discussions.`, `<b>Interdisciplinary Linkage &amp; Life Skills:</b><br>Relating classroom learning to everyday habits, nature care and conscious decision-making.`)}
+                ${cols(`<b>Assessment Strategies:</b><br>Guided worksheets, verbal quiz checks and group activity observation.`, `<b>Home Assignment:</b><br>Practice questions from textbook exercise and reflection notebook writing.`, `<b>Competency Based Question:</b><br>Practical situational question to test student reasoning in daily life.`)}
+                <table class="m"><tr><td style="width:50%"><p><b>Notebook (CW/HW) Checked?</b> Yes [ ✔ ] / No [ &nbsp; ]</p><p><b>Topic Covered?</b> Yes [ ✔ ] / No [ &nbsp; ]</p></td><td><b>Principal's / Supervisor's Observation &amp; Remark:</b><div style="border-bottom:1px dashed #9ca3af;height:26px"></div></td></tr></table>${sign}</div>`;
+
+            for (let day = 1; day <= d.periodsCount; day++) {
+                const t = e(dayTopic(d, day)), img = im(getContextualImage(d.subject, dayTopic(d, day)));
+                out.lessons += `<div class="pg">${hdr(`E-Lesson Plan - Day ${day} of ${d.periodsCount} (${e(d.lang)})`, `${dates}<br>Page 1 of 2`)}
+                    <div class="bx"><table><tr><td style="width:25%"><b>Teacher:</b> ${e(d.teacherName)}</td><td style="width:25%"><b>Subject:</b> ${e(d.subject)}</td><td style="width:25%"><b>Class/Sec:</b> ${cs}</td><td><b>Chapter:</b> ${e(d.chapterName)}</td></tr>
+                    <tr><td><b>Period:</b> Day ${day}</td><td><b>Duration:</b> ${e(d.duration)} min</td><td><b>Start Date:</b> ${e(d.startDate)}</td><td><b>End Date:</b> ${e(d.endDate)}</td></tr></table></div>
+                    <div class="bx m"><table><tr><td style="width:70%;padding-right:10px"><b>Detailed Focus Area (Day ${day}):</b><br>Today we will deeply explore <b>${t}</b>. Students will engage in friendly classroom conversations, examine tangible examples, clear all lingering doubts and connect textbook material to everyday observations.</td><td style="width:30%"><img src="${img}" alt="" style="width:100%;height:auto;border:1px solid #9ca3af"><div class="cap">Contextual Visual Aid</div></td></tr></table></div>
+                    <div class="bx m"><b>TLM &amp; Steps to Create TLM (Teaching Learning Material):</b><ul><li><b>Material Required:</b> Chart paper, colorful sketch pens, recycled cardboard box, flashcards and thread.</li><li><b>Step 1:</b> Cut the chart paper into neat rectangular flashcards representing key keywords of ${t}.</li><li><b>Step 2:</b> Draw clear schematic diagrams or flowcharts illustrating the concept on the cardboard base.</li><li><b>Step 3:</b> Use this interactive display model during class exploration to test student matching skills.</li></ul></div>
+                    ${cols(`<b>Key Concepts Explained:</b><br>Breaking down terminology behind ${t} into simple language so every student follows along comfortably.`, `<b>Learning Objectives (Student Goals):</b><ol><li>Explain ${t} in own words.</li><li>Actively participate in group sharing.</li><li>Solve guided practice questions correctly.</li></ol>`).replace(/class="bx"/g, 'class="bw"')}
+                    <div class="bw m"><b>5-E Pedagogical Stages (Part 1):</b><table class="gt" style="margin-top:4px">${th5}
+                    ${row5('Engage', `Ask a fun, relatable question about ${t} to spark curiosity.`, 'Raise hands, share personal stories and connect past experiences.')}
+                    ${row5('Explore', 'Divide class into pairs, handing out TLM cards for examination.', 'Talk with partners, observe details closely and note thoughts.')}
+                    ${row5('Explain', 'Write key definitions on blackboard, explaining step-by-step.', 'Listen attentively, ask questions and copy neat summaries.')}</table></div></div>
+                    <div class="pg">${hdr(`E-Lesson Plan (Continued - Day ${day})`, `${dates}<br>Page 2 of 2`)}
+                    <div class="bw"><table class="gt">${th5}
+                    ${row5('Elaborate', `Present a challenge puzzle regarding ${t} for teamwork.`, 'Brainstorm solutions, debate gently with peers and present reasoning.')}
+                    ${row5('Evaluate', 'Walk around desks checking notebooks and handing out exit slips.', 'Complete worksheet questions independently showing mastery.')}</table></div>
+                    ${cols(`<b>Evaluation &amp; Meaningful Homework:</b><br>Complete review questions for ${t} in notebooks and bring 1 real-life observation note.`, `<b>Which SDG Goal Highlighted &amp; How?</b><br><b>SDG 4 (Quality Education):</b> Fostering inclusive, engaging classroom discussions making learning accessible.`).replace(/class="bx"/g, 'class="bw"')}
+                    <div class="bx m"><table><tr><td><b>FEEDBACK OF THE SUPERVISOR</b></td><td class="sm">(In a 5-point Scale: A: Excellent; B: Good; C: Average; D: Below Average; E: Needs Improvement)</td></tr></table>
+                    <table class="gt" style="margin-top:4px;background:#fff"><tr><th style="width:8%;text-align:center">S/N</th><th>Descriptive Indicators</th><th style="width:14%;text-align:center">Grade</th></tr>
+                    ${FEEDBACK.map((f, i) => `<tr><td style="text-align:center">${i + 1}</td><td>${f}</td><td>&nbsp;</td></tr>`).join('')}</table>${sign}</div></div>`;
+            }
+
+            out.activity = `<div class="pg">${hdr('CHAPTER ACTIVITY &amp; WORKSHEET', '', `${e(d.subject)} | Class: ${cs} | Chapter: ${e(d.chapterName)}`)}
+                <div class="bx"><b>Objective-Based Hands-On Activity</b><br>Students will engage in practical inquiry and model construction based on core chapter concepts.</div>
+                <div class="bw m"><b>Section A: Guided Task &amp; Observation</b><ol><li>Carefully observe the materials or phenomena presented in class.</li><li>Discuss findings with your bench partner and note down key points.</li><li>Summarize how this concept connects to our daily lives.</li></ol></div>
+                <div class="bw m"><b>Section B: Skill Check &amp; Review</b><p>Answer the following questions in your own words:</p><ul><li>Why is learning about this chapter important for us today?</li><li>Give two real-world examples where you see this concept in action.</li></ul></div></div>`;
+
+            out.qa = `<div class="pg">${hdr('COMPREHENSIVE CHAPTER QUESTION &amp; ANSWER', '', `${e(d.subject)} | Chapter: ${e(d.chapterName)} (Covering All Topics)`)}` +
+                T.map((t, i) => `<div class="bx m" style="page-break-inside:avoid"><p><b>TOPIC ${i + 1}: ${e(t).toUpperCase()}</b></p><p><b>Q${i * 2 + 1}: In your own words, explain what ${e(t)} means and why we study it in ${e(d.subject)}?</b></p><p><b>Ans:</b> Simply put, ${e(t)} is a core idea in ${e(d.chapterName)} that helps us understand how things work around us. We study it so students can connect book knowledge to real-world observations and handle practical problems easily.</p><p><b>Q${i * 2 + 2}: Give a real-life example to illustrate the practical importance of ${e(t)}.</b></p><p><b>Ans:</b> Whenever we observe ${e(t)} in daily life, such as at home or during outdoor activities, systematic understanding helps us make safer and smarter choices.</p></div>`).join('') + '</div>';
+            return out;
+        }
+
+        async function prepareImages(d) {
+            d.imgData = d.imgData || {};
+            const urls = [LOGO]; for (let i = 1; i <= d.periodsCount; i++) urls.push(getContextualImage(d.subject, dayTopic(d, i)));
+            await Promise.all([...new Set(urls)].map(async u => {
+                if (d.imgData[u]) return;
+                try {
+                    const b = await (await fetch(u, {mode: 'cors'})).blob();
+                    d.imgData[u] = await new Promise((ok, no) => { const f = new FileReader(); f.onload = () => ok(f.result); f.onerror = no; f.readAsDataURL(b); });
+                } catch (x) { /* keep the normal link */ }
+            }));
+        }
+
+        // Complete document: same pages as the screen. only = 'diary' | 'lessons' | 'activity' | 'qa' | undefined (all)
+        async function buildReportHTML(d, embed, only) {
+            if (embed) await prepareImages(d);
+            const p = pagesHTML(d, embed);
+            const body = only ? p[only] : p.diary + p.lessons + p.activity + p.qa;
+            return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${escapeHtml(d.chapterName)}</title>
+                <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
+                <style>${REPORT_CSS}${PAGE_CSS}</style></head><body>${body}</body></html>`;
+        }
+
+        // PDF built from the exact same pages (pixel-identical to screen/print)
+        async function makePdf(d) {
+            if (!window.html2canvas || !window.jspdf) return null;
+            await prepareImages(d);
+            const host = document.createElement('div');
+            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:602px;background:#fff';
+            const p = pagesHTML(d, true);
+            host.innerHTML = `<style>${PAGE_CSS}</style>` + p.diary + p.lessons + p.activity + p.qa;
+            document.body.appendChild(host);
+            try {
+                const pdf = new window.jspdf.jsPDF({unit: 'pt', format: 'a4', compress: true});
+                const pw = pdf.internal.pageSize.getWidth(), ph = pdf.internal.pageSize.getHeight(), mw = pw - 144, mh = ph - 144;
+                const pages = host.querySelectorAll('.pg');
+                for (let i = 0; i < pages.length; i++) {
+                    const c = await window.html2canvas(pages[i], {scale: 2, backgroundColor: '#ffffff', useCORS: true});
+                    let w = mw, h = w * c.height / c.width; if (h > mh) { h = mh; w = h * c.width / c.height; }
+                    if (i) pdf.addPage();
+                    pdf.addImage(c.toDataURL('image/jpeg', 0.88), 'JPEG', 72, 72, w, h);
+                }
+                return pdf;
+            } finally { host.remove(); }
+        }
+        async function payloadFiles(d) {
+            let pdf = null; try { pdf = await makePdf(d); } catch (x) { pdf = null; }
+            return {docHtml: await buildReportHTML(d, false), pdf: pdf ? pdf.output('datauristring').split('base64,')[1] : '', html: pdf ? '' : await buildReportHTML(d, true)};
+        }
+
+        async function downloadAsPDF() {
+            if (!needGenerated()) return;
+            document.body.style.cursor = 'wait';
+            try {
+                const pdf = await makePdf(lastData);
+                if (!pdf) { await printReport(); return; }
+                pdf.save(safeName(lastData.chapterName) + '.pdf');
+                showNotification('PDF Export', 'PDF downloaded. It is identical to the on-screen pages.', 'success');
+            } catch (err) { notifyFail(err); }
+            document.body.style.cursor = '';
+        }
+        async function downloadAsDOCX() {
+            if (!needGenerated()) return;
+            saveBlob(new Blob(['\ufeff' + await buildReportHTML(lastData, false)], {type: 'application/msword'}), safeName(lastData.chapterName) + '.doc');
+            showNotification('DOC Export', 'Complete report downloaded as a Word (.doc) file.', 'success');
+        }
+        async function printReport(scope) {
+            if (!needGenerated()) return;
+            const html = await buildReportHTML(lastData, true, scope === 'tab' ? currentTab : undefined);
+            const f = document.createElement('iframe');
+            f.style.cssText = 'position:fixed;width:0;height:0;border:0;';
+            f.onload = () => { setTimeout(() => { f.contentWindow.focus(); f.contentWindow.print(); }, 400); setTimeout(() => f.remove(), 120000); };
+            f.srcdoc = html; document.body.appendChild(f);
+        }
+
+        async function generateDocuments(e) {
+            e.preventDefault();
+            const v = id => document.getElementById(id).value;
+            let subject = v('subject-select');
+            if (subject === 'Other') subject = v('custom-subject') || 'Other Subject';
+            if (v('start-date') && v('end-date') && v('end-date') < v('start-date')) { showNotification('Check Dates', 'End date cannot be before the start date.', 'info'); return; }
+            lastData = {
+                schoolName: v('school-name-input') || 'DAV PUBLIC SCHOOL, BUXAR', principalName: v('principal-name-input') || 'V Anand Kumar', lang: v('output-lang'),
+                teacherName: v('teacher-name'), chapterName: v('chapter-name'), topicsList: v('topics').split(',').map(t => t.trim()).filter(Boolean),
+                className: v('class-select'), section: v('section-select'), periodsCount: parseInt(v('periods-count')) || 3,
+                startDate: formatDateDDMMMYYYY(v('start-date')), endDate: formatDateDDMMMYYYY(v('end-date')), duration: v('duration'), contentText: v('content-text'), subject, imgData: {}
+            };
+            document.getElementById('header-school-title').innerText = lastData.schoolName;
+            const p = pagesHTML(lastData, false);
+            ['diary', 'lessons', 'activity', 'qa'].forEach(k => { document.getElementById('tab-content-' + k).innerHTML = p[k]; });
+            document.getElementById('save-status').classList.add('hidden');
+            switchTab('diary');
+            showNotification('Generation Successful', 'Lesson plans, TLM and activity sheets are ready. Screen, Print, PDF, DOC and Drive all use these same pages.', 'success');
         }
 
         function clearForm() {
@@ -1046,14 +771,15 @@
 
         // ---------- Google Drive connection (Apps Script web app) ----------
         // Optional: paste your Apps Script /exec URL here so every teacher gets it automatically on GitHub Pages
-        const DEFAULT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwdzLxTdLlt8XUvEwZaNAT9srUTHQdYB32qk4ZXrUWvB2HZjn0HNaP4ewAeMjKozG2J5Q/exec';
+        const DEFAULT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzeKEBIIM-vuqSUtM2qfsBXWkfk8W8-Ofn9MfHzVFBNuN0V7lyf_cxt7DkzaAvRFwQYcA/exec';
         async function api(action, payload) {
             const url = store.get('tdUrl') || DEFAULT_WEB_APP_URL;
             if (!url) { openSettings(); throw new Error('Please paste your Google Drive Web App URL in Settings first.'); }
+            if (!/^https:\/\/script\.google(usercontent)?\.com\/(a\/[^/]+\/)?macros\/s\/[^/\s]+\/exec$/.test(url.trim())) throw new Error('The Web App URL looks wrong. It must start with https://script.google.com/macros/s/ and end with /exec (not /dev, and not the script editor link).');
             let res;
             try {
-                res = await fetch(url, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({action, key: store.get('tdKey')}, payload || {}))});
-            } catch (x) { throw new Error('Could not reach Google Drive. Check your internet and the Web App URL in Settings.'); }
+                res = await fetch(url.trim(), {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({action, key: store.get('tdKey')}, payload || {}))});
+            } catch (x) { throw new Error('Could not reach the Drive Web App. Most often the deployment access is not set to "Anyone", or the script was not authorized. Open the /exec URL in a new tab: you should see {"ok":true,...}.'); }
             let data;
             try { data = await res.json(); } catch (x) { throw new Error('Unexpected reply from the Web App. Re-deploy it with access set to "Anyone" and use the /exec URL.'); }
             if (!data.ok) throw new Error(data.message || 'Request was not completed.');
@@ -1078,7 +804,7 @@
             btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Saving...';
             try {
                 const d = lastData;
-                const r = await api('save', {teacher: d.teacherName, className: `Class ${d.className}-${d.section}`, fileName: safeName(d.chapterName), html: buildReportHTML(d)});
+                const r = await api('save', {teacher: d.teacherName, className: `Class ${d.className}-${d.section}`, fileName: safeName(d.chapterName), ...(await payloadFiles(d))});
                 const box = document.getElementById('save-status');
                 box.innerHTML = `<i class="fas fa-circle-check mr-1"></i> Saved <b>${escapeHtml(r.files.join(' & '))}</b> in <b>${escapeHtml(r.path)}</b> &nbsp;<a class="underline font-semibold" target="_blank" rel="noopener" href="${escapeHtml(r.folderUrl)}">Open folder</a>`;
                 box.classList.remove('hidden');
