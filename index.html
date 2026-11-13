@@ -19,9 +19,7 @@
             }
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- FontAwesome for Icons -->
+        <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -571,44 +569,84 @@
 
         // =====================================================================
         // ONE template for screen, print, PDF, DOC, Drive and Email  => 100% same
+        // Every page is auto-fitted so each A4 page is filled (bigger font + line spacing).
         // If the logo is missing in the PDF, upload logo.png to your GitHub repo and set LOGO = 'logo.png'
         // =====================================================================
         const LOGO = 'https://davrecruit.davcmc.in/CBT/logo.png';
+        const PAGE_H = 905, FS_MAX = 16.5;   // A4 usable height (px) with 1-inch margins, max font size
         const PAGE_CSS = `
-.pg{font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.4;color:#000;background:#fff}
-.pg *{font-family:Arial,Helvetica,sans-serif}
-.pg table{border-collapse:collapse;width:100%;border:0}
-.pg td,.pg th{vertical-align:top;text-align:left;padding:0;border:0;font-size:12px}
-.pg p{margin:0 0 4px}
-.pg ul{list-style:disc;margin:2px 0 0;padding-left:18px}
-.pg ol{list-style:decimal;margin:2px 0 0;padding-left:18px}
-.pg li{margin:0 0 2px;display:list-item}
-.pg img{display:block}
-.pg .hd{border-bottom:2px solid #000;margin-bottom:8px}
-.pg .hd td{padding-bottom:6px;vertical-align:middle}
-.pg .sc{font-size:14px;font-weight:bold;text-transform:uppercase}
-.pg .tt{font-size:12px;font-weight:bold}
-.pg .bx{border:1px solid #9ca3af;background:#f9fafb;padding:8px}
-.pg .bw{border:1px solid #9ca3af;padding:8px}
-.pg .m{margin-top:8px}
-.pg .gt td,.pg .gt th{border:1px solid #9ca3af;padding:4px;font-size:11px}
+.pg{font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.6;color:#000;background:#fff}
+.pg,.pg *{font-family:Arial,Helvetica,sans-serif;box-sizing:border-box}
+.pg table{border-collapse:collapse;width:100%;border:0;font-size:inherit;line-height:inherit}
+.pg td,.pg th{vertical-align:top;text-align:left;padding:0;border:0;font-size:1em}
+.pg p{margin:0 0 .35em}
+.pg ul{list-style:disc;margin:.2em 0 0;padding-left:1.5em}
+.pg ol{list-style:decimal;margin:.2em 0 0;padding-left:1.5em}
+.pg li{margin:0 0 .2em;display:list-item}
+.pg img{display:block;max-width:100%}
+.pg .logo{height:3.4em;width:auto}
+.pg .pic{width:100%;height:10em;object-fit:cover;border:1px solid #9ca3af}
+.pg .hd{border-bottom:2px solid #000;margin-bottom:.7em}
+.pg .hd td{padding-bottom:.5em;vertical-align:middle}
+.pg .sc{font-size:1.17em;font-weight:bold;text-transform:uppercase}
+.pg .tt{font-weight:bold}
+.pg .bx{border:1px solid #9ca3af;background:#f9fafb;padding:.7em}
+.pg .bw{border:1px solid #9ca3af;padding:.7em}
+.pg .m{margin-top:.7em}
+.pg .gt td,.pg .gt th{border:1px solid #9ca3af;padding:.35em .45em;font-size:.93em}
 .pg .gt th{background:#f3f4f6;font-weight:bold}
-.pg .sig{border-top:1px solid #000;padding:3px 10px;font-weight:bold;font-size:11px;text-align:center;margin:0 6px}
-.pg .cap{font-size:9px;color:#374151;text-align:center}
-.pg .sm{font-size:10px;text-align:right}`;
-        const SCREEN_CSS = `.scr .pg{width:634px;max-width:100%;box-sizing:border-box;padding:16px;margin:0 auto 16px;border:1px solid #d1d5db;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.12)}`;
+.pg .sig{border-top:1px solid #000;padding:.3em .8em;font-weight:bold;font-size:.93em;text-align:center;margin:0 .5em}
+.pg .cap{font-size:.75em;color:#374151;text-align:center}
+.pg .sm{font-size:.85em;text-align:right}`;
+        const SCREEN_CSS = `.scr .pg{box-sizing:content-box;width:602px;max-width:100%;padding:16px;margin:0 auto 16px;border:1px solid #d1d5db;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+@media print{.scr .pg{width:auto;max-width:none;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;page-break-after:always}}`;
         const REPORT_CSS = `@page{size:A4;margin:1in} body{margin:0;background:#fff} .pg{page-break-after:always} .pg:last-child{page-break-after:auto}`;
+        (function () { const st = document.createElement('style'); st.textContent = PAGE_CSS + SCREEN_CSS; document.head.appendChild(st); })();
 
-        (function(){ const st = document.createElement('style'); st.textContent = PAGE_CSS + SCREEN_CSS; document.head.appendChild(st); })();
+        // ---- auto-fit: grow font size, then line spacing, until the A4 page is full ----
+        function fitHost() {
+            let h = document.getElementById('fit-host');
+            if (!h) { h = document.createElement('div'); h.id = 'fit-host'; h.style.cssText = 'position:absolute;left:-10000px;top:0;width:602px;visibility:hidden'; document.body.appendChild(h); }
+            return h;
+        }
+        function fitPages(d, key, html) {
+            const host = fitHost(); host.innerHTML = html;
+            d.fit = d.fit || {}; const cache = d.fit[key] = d.fit[key] || [];
+            [...host.children].forEach((pg, i) => {
+                if (!cache[i]) {
+                    const set = (fs, lh) => { pg.style.fontSize = fs + 'px'; pg.style.lineHeight = lh; return pg.offsetHeight; };
+                    let fs = FS_MAX, lh = 1.6;
+                    if (set(fs, lh) <= PAGE_H) { let a = lh, b = 2.4; for (let k = 0; k < 12; k++) { const m = (a + b) / 2; if (set(fs, m) <= PAGE_H) a = m; else b = m; } lh = a; }
+                    else { let a = 11, b = FS_MAX; for (let k = 0; k < 14; k++) { const m = (a + b) / 2; if (set(m, lh) <= PAGE_H) a = m; else b = m; } fs = a; }
+                    cache[i] = [+fs.toFixed(2), +lh.toFixed(2)];
+                }
+                pg.style.fontSize = cache[i][0] + 'px'; pg.style.lineHeight = cache[i][1];
+            });
+            return host.innerHTML;
+        }
+        // Q&A flows over as many full pages as needed
+        function qaPages(d, hdr, boxes) {
+            const host = fitHost(), wrap = ids => `<div class="pg" style="font-size:14.5px;line-height:1.7">${hdr}${ids.map(i => boxes[i]).join('')}</div>`;
+            if (!d.qaSplit) {
+                const groups = []; let cur = [];
+                boxes.forEach((_, i) => {
+                    host.innerHTML = wrap([...cur, i]);
+                    if (host.firstElementChild.offsetHeight > PAGE_H && cur.length) { groups.push(cur); cur = [i]; } else cur = [...cur, i];
+                });
+                if (cur.length) groups.push(cur); d.qaSplit = groups;
+            }
+            return d.qaSplit.map(wrap).join('');
+        }
+
         const FEEDBACK = ['Lesson includes engaging introductory activity or question related to topic.','Activity activates prior knowledge and interest required for success.','Lesson provides opportunity to explore concepts through investigations.','Components allow clear understanding through student-driven exploration.','Lesson provides opportunity to share/collaborate in small/whole groups.','Teacher acts as facilitator.','Lesson provides opportunity to clarify and elaborate to deepen vocabulary.','Students are given activity to reinforce concepts to new situations.','Lesson includes formative and summative assessments.','Lesson includes exact questions and location of formative assessments.'];
         const dayTopic = (d, day) => d.topicsList[day - 1] || d.topicsList.join(', ') || d.chapterName;
 
         function pagesHTML(d, embed) {
             const e = escapeHtml, T = d.topicsList.length ? d.topicsList : [d.chapterName];
             const im = u => (embed && d.imgData && d.imgData[u]) || u;
-            const hdr = (title, right, sub) => `<table class="hd"><tr><td style="width:18%"><img src="${im(LOGO)}" alt="" style="height:40px"></td><td style="text-align:center"><div class="sc">${e(d.schoolName)}</div><div class="tt">${title}</div>${sub ? `<div class="cap">${sub}</div>` : ''}</td><td style="width:22%" class="sm">${right}</td></tr></table>`;
+            const hdr = (title, right, sub) => `<table class="hd"><tr><td style="width:18%"><img class="logo" src="${im(LOGO)}" alt=""></td><td style="text-align:center"><div class="sc">${e(d.schoolName)}</div><div class="tt">${title}</div>${sub ? `<div class="cap">${sub}</div>` : ''}</td><td style="width:22%" class="sm">${right}</td></tr></table>`;
             const cols = (...c) => { const w = (100 - (c.length - 1) * 2) / c.length; return `<table class="m"><tr>` + c.map((x, i) => `${i ? '<td style="width:2%"></td>' : ''}<td class="bx" style="width:${w}%">${x}</td>`).join('') + `</tr></table>`; };
-            const sign = `<table style="margin-top:30px"><tr><td style="width:33%"><div class="sig">${e(d.teacherName)} (Teacher)</div></td><td style="width:34%"><div class="sig">I/C Academic</div></td><td style="width:33%"><div class="sig">${e(d.principalName)} (Principal)</div></td></tr></table>`;
+            const sign = `<table style="margin-top:2.6em"><tr><td style="width:33%"><div class="sig">${e(d.teacherName)} (Teacher)</div></td><td style="width:34%"><div class="sig">I/C Academic</div></td><td style="width:33%"><div class="sig">${e(d.principalName)} (Principal)</div></td></tr></table>`;
             const cs = `${e(d.className)} - ${e(d.section)}`, dates = `<b>Date:</b> ${e(d.startDate)}`;
             const row5 = (s, a, b) => `<tr><td><b>${s}</b></td><td>${a}</td><td>${b}</td></tr>`;
             const th5 = `<tr><th style="width:15%">Stage</th><th>Teacher's Detailed Action</th><th>What Students Will Do</th></tr>`;
@@ -619,14 +657,14 @@
                 ${cols(`<b>Lesson / Topic:</b><br>${e(d.chapterName)}: ${e(T.join(', '))}. ${d.contentText ? 'Notes: ' + e(d.contentText) : ''}`, `<b>Learning Outcome / Curriculum Goal:</b><br>Students will clearly understand core chapter ideas through real-life examples, interactive discussions and hands-on practice.`)}
                 ${cols(`<b>Methodology &amp; Teaching Strategies:</b><br>Friendly classroom interaction, blackboard explanations, probing questions and peer discussions.`, `<b>Interdisciplinary Linkage &amp; Life Skills:</b><br>Relating classroom learning to everyday habits, nature care and conscious decision-making.`)}
                 ${cols(`<b>Assessment Strategies:</b><br>Guided worksheets, verbal quiz checks and group activity observation.`, `<b>Home Assignment:</b><br>Practice questions from textbook exercise and reflection notebook writing.`, `<b>Competency Based Question:</b><br>Practical situational question to test student reasoning in daily life.`)}
-                <table class="m"><tr><td style="width:50%"><p><b>Notebook (CW/HW) Checked?</b> Yes [ ✔ ] / No [ &nbsp; ]</p><p><b>Topic Covered?</b> Yes [ ✔ ] / No [ &nbsp; ]</p></td><td><b>Principal's / Supervisor's Observation &amp; Remark:</b><div style="border-bottom:1px dashed #9ca3af;height:26px"></div></td></tr></table>${sign}</div>`;
+                <table class="m"><tr><td style="width:50%"><p><b>Notebook (CW/HW) Checked?</b> Yes [ ✔ ] / No [ &nbsp; ]</p><p><b>Topic Covered?</b> Yes [ ✔ ] / No [ &nbsp; ]</p></td><td><b>Principal's / Supervisor's Observation &amp; Remark:</b><div style="border-bottom:1px dashed #9ca3af;height:2.2em"></div></td></tr></table>${sign}</div>`;
 
             for (let day = 1; day <= d.periodsCount; day++) {
                 const t = e(dayTopic(d, day)), img = im(getContextualImage(d.subject, dayTopic(d, day)));
                 out.lessons += `<div class="pg">${hdr(`E-Lesson Plan - Day ${day} of ${d.periodsCount} (${e(d.lang)})`, `${dates}<br>Page 1 of 2`)}
                     <div class="bx"><table><tr><td style="width:25%"><b>Teacher:</b> ${e(d.teacherName)}</td><td style="width:25%"><b>Subject:</b> ${e(d.subject)}</td><td style="width:25%"><b>Class/Sec:</b> ${cs}</td><td><b>Chapter:</b> ${e(d.chapterName)}</td></tr>
                     <tr><td><b>Period:</b> Day ${day}</td><td><b>Duration:</b> ${e(d.duration)} min</td><td><b>Start Date:</b> ${e(d.startDate)}</td><td><b>End Date:</b> ${e(d.endDate)}</td></tr></table></div>
-                    <div class="bx m"><table><tr><td style="width:70%;padding-right:10px"><b>Detailed Focus Area (Day ${day}):</b><br>Today we will deeply explore <b>${t}</b>. Students will engage in friendly classroom conversations, examine tangible examples, clear all lingering doubts and connect textbook material to everyday observations.</td><td style="width:30%"><img src="${img}" alt="" style="width:100%;height:auto;border:1px solid #9ca3af"><div class="cap">Contextual Visual Aid</div></td></tr></table></div>
+                    <div class="bx m"><table><tr><td style="width:70%;padding-right:.8em"><b>Detailed Focus Area (Day ${day}):</b><br>Today we will deeply explore <b>${t}</b>. Students will engage in friendly classroom conversations, examine tangible examples, clear all lingering doubts and connect textbook material to everyday observations.</td><td style="width:30%"><img class="pic" src="${img}" alt=""><div class="cap">Contextual Visual Aid</div></td></tr></table></div>
                     <div class="bx m"><b>TLM &amp; Steps to Create TLM (Teaching Learning Material):</b><ul><li><b>Material Required:</b> Chart paper, colorful sketch pens, recycled cardboard box, flashcards and thread.</li><li><b>Step 1:</b> Cut the chart paper into neat rectangular flashcards representing key keywords of ${t}.</li><li><b>Step 2:</b> Draw clear schematic diagrams or flowcharts illustrating the concept on the cardboard base.</li><li><b>Step 3:</b> Use this interactive display model during class exploration to test student matching skills.</li></ul></div>
                     ${cols(`<b>Key Concepts Explained:</b><br>Breaking down terminology behind ${t} into simple language so every student follows along comfortably.`, `<b>Learning Objectives (Student Goals):</b><ol><li>Explain ${t} in own words.</li><li>Actively participate in group sharing.</li><li>Solve guided practice questions correctly.</li></ol>`).replace(/class="bx"/g, 'class="bw"')}
                     <div class="bw m"><b>5-E Pedagogical Stages (Part 1):</b><table class="gt" style="margin-top:4px">${th5}
@@ -648,10 +686,15 @@
                 <div class="bw m"><b>Section A: Guided Task &amp; Observation</b><ol><li>Carefully observe the materials or phenomena presented in class.</li><li>Discuss findings with your bench partner and note down key points.</li><li>Summarize how this concept connects to our daily lives.</li></ol></div>
                 <div class="bw m"><b>Section B: Skill Check &amp; Review</b><p>Answer the following questions in your own words:</p><ul><li>Why is learning about this chapter important for us today?</li><li>Give two real-world examples where you see this concept in action.</li></ul></div></div>`;
 
-            out.qa = `<div class="pg">${hdr('COMPREHENSIVE CHAPTER QUESTION &amp; ANSWER', '', `${e(d.subject)} | Chapter: ${e(d.chapterName)} (Covering All Topics)`)}` +
-                T.map((t, i) => `<div class="bx m" style="page-break-inside:avoid"><p><b>TOPIC ${i + 1}: ${e(t).toUpperCase()}</b></p><p><b>Q${i * 2 + 1}: In your own words, explain what ${e(t)} means and why we study it in ${e(d.subject)}?</b></p><p><b>Ans:</b> Simply put, ${e(t)} is a core idea in ${e(d.chapterName)} that helps us understand how things work around us. We study it so students can connect book knowledge to real-world observations and handle practical problems easily.</p><p><b>Q${i * 2 + 2}: Give a real-life example to illustrate the practical importance of ${e(t)}.</b></p><p><b>Ans:</b> Whenever we observe ${e(t)} in daily life, such as at home or during outdoor activities, systematic understanding helps us make safer and smarter choices.</p></div>`).join('') + '</div>';
+            const qaHdr = hdr('COMPREHENSIVE CHAPTER QUESTION &amp; ANSWER', '', `${e(d.subject)} | Chapter: ${e(d.chapterName)} (Covering All Topics)`);
+            const qaBoxes = T.map((t, i) => `<div class="bx m" style="page-break-inside:avoid"><p><b>TOPIC ${i + 1}: ${e(t).toUpperCase()}</b></p><p><b>Q${i * 2 + 1}: In your own words, explain what ${e(t)} means and why we study it in ${e(d.subject)}?</b></p><p><b>Ans:</b> Simply put, ${e(t)} is a core idea in ${e(d.chapterName)} that helps us understand how things work around us. We study it so students can connect book knowledge to real-world observations and handle practical problems easily.</p><p><b>Q${i * 2 + 2}: Give a real-life example to illustrate the practical importance of ${e(t)}.</b></p><p><b>Ans:</b> Whenever we observe ${e(t)} in daily life, such as at home or during outdoor activities, systematic understanding helps us make safer and smarter choices.</p></div>`);
+            out.diary = fitPages(d, 'diary', out.diary);
+            out.lessons = fitPages(d, 'lessons', out.lessons);
+            out.activity = fitPages(d, 'activity', out.activity);
+            out.qa = qaPages(d, qaHdr, qaBoxes);
             return out;
         }
+
 
         async function prepareImages(d) {
             d.imgData = d.imgData || {};
@@ -670,47 +713,74 @@
             if (embed) await prepareImages(d);
             const p = pagesHTML(d, embed);
             const body = only ? p[only] : p.diary + p.lessons + p.activity + p.qa;
-            return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${escapeHtml(d.chapterName)}</title>
+            return `<!DOCTYPE html><html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${escapeHtml(d.chapterName)}</title>
                 <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
                 <style>${REPORT_CSS}${PAGE_CSS}</style></head><body>${body}</body></html>`;
         }
 
-        // PDF built from the exact same pages (pixel-identical to screen/print)
+        // ---- PDF: each page is drawn by the browser itself (SVG), then packed into an A4 PDF. No external library. ----
+        function jpegsToPdf(pages) {
+            const enc = new TextEncoder(), chunks = [], offs = []; let len = 0;
+            const put = x => { const b = typeof x === 'string' ? enc.encode(x) : x; chunks.push(b); len += b.length; };
+            const n = pages.length, total = 2 + n * 3, PW = 595.28, PH = 841.89, M = 72;
+            const obj = (id, body) => { offs[id] = len; put(`${id} 0 obj\n`); body(); put('\nendobj\n'); };
+            put('%PDF-1.4\n');
+            obj(1, () => put('<< /Type /Catalog /Pages 2 0 R >>'));
+            obj(2, () => put(`<< /Type /Pages /Count ${n} /Kids [${pages.map((_, i) => `${3 + i * 3} 0 R`).join(' ')}] >>`));
+            pages.forEach((p, i) => {
+                const pid = 3 + i * 3, cid = pid + 1, iid = pid + 2;
+                let w = p.w * 0.75, h = p.h * 0.75; const mw = PW - 2 * M, mh = PH - 2 * M;
+                if (h > mh) { w *= mh / h; h = mh; } if (w > mw) { h *= mw / w; w = mw; }
+                const cs = `q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${M} ${(PH - M - h).toFixed(2)} cm /Im0 Do Q`;
+                obj(pid, () => put(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Contents ${cid} 0 R /Resources << /XObject << /Im0 ${iid} 0 R >> >> >>`));
+                obj(cid, () => put(`<< /Length ${cs.length} >>\nstream\n${cs}\nendstream`));
+                obj(iid, () => { put(`<< /Type /XObject /Subtype /Image /Width ${p.W} /Height ${p.H} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.u8.length} >>\nstream\n`); put(p.u8); put('\nendstream'); });
+            });
+            const xr = len; put(`xref\n0 ${total + 1}\n0000000000 65535 f \n`);
+            for (let i = 1; i <= total; i++) put(String(offs[i]).padStart(10, '0') + ' 00000 n \n');
+            put(`trailer\n<< /Size ${total + 1} /Root 1 0 R >>\nstartxref\n${xr}\n%%EOF`);
+            return new Blob(chunks, {type: 'application/pdf'});
+        }
         async function makePdf(d) {
-            if (!window.html2canvas || !window.jspdf) return null;
             await prepareImages(d);
+            const p = pagesHTML(d, true), W = 602;
             const host = document.createElement('div');
-            host.style.cssText = 'position:fixed;left:-10000px;top:0;width:602px;background:#fff';
-            const p = pagesHTML(d, true);
+            host.style.cssText = 'position:absolute;left:-10000px;top:0;width:602px';
             host.innerHTML = `<style>${PAGE_CSS}</style>` + p.diary + p.lessons + p.activity + p.qa;
             document.body.appendChild(host);
             try {
-                const pdf = new window.jspdf.jsPDF({unit: 'pt', format: 'a4', compress: true});
-                const pw = pdf.internal.pageSize.getWidth(), ph = pdf.internal.pageSize.getHeight(), mw = pw - 144, mh = ph - 144;
-                const pages = host.querySelectorAll('.pg');
-                for (let i = 0; i < pages.length; i++) {
-                    const c = await window.html2canvas(pages[i], {scale: 2, backgroundColor: '#ffffff', useCORS: true});
-                    let w = mw, h = w * c.height / c.width; if (h > mh) { h = mh; w = h * c.width / c.height; }
-                    if (i) pdf.addPage();
-                    pdf.addImage(c.toDataURL('image/jpeg', 0.88), 'JPEG', 72, 72, w, h);
+                const pages = [];
+                for (const pg of host.querySelectorAll('.pg')) {
+                    const H = Math.ceil(pg.getBoundingClientRect().height) + 2;
+                    const xml = new XMLSerializer().serializeToString(pg.cloneNode(true));
+                    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><foreignObject x="0" y="0" width="${W}" height="${H}"><div xmlns="http://www.w3.org/1999/xhtml" style="width:${W}px;background:#fff"><style>${PAGE_CSS}</style>${xml}</div></foreignObject></svg>`;
+                    const img = new Image();
+                    await new Promise((ok, no) => { img.onload = ok; img.onerror = () => no(new Error('Page drawing failed')); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); });
+                    const S = 2, cv = document.createElement('canvas'); cv.width = W * S; cv.height = H * S;
+                    const cx = cv.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0, 0, cv.width, cv.height); cx.drawImage(img, 0, 0, cv.width, cv.height);
+                    const bin = atob(cv.toDataURL('image/jpeg', 0.92).split(',')[1]), u8 = new Uint8Array(bin.length);
+                    for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+                    pages.push({u8, W: cv.width, H: cv.height, w: W, h: H});
                 }
-                return pdf;
+                return jpegsToPdf(pages);
             } finally { host.remove(); }
         }
         async function payloadFiles(d) {
-            let pdf = null; try { pdf = await makePdf(d); } catch (x) { pdf = null; }
-            return {docHtml: await buildReportHTML(d, false), pdf: pdf ? pdf.output('datauristring').split('base64,')[1] : '', html: pdf ? '' : await buildReportHTML(d, true)};
+            let pdf = '';
+            try {
+                const blob = await makePdf(d);
+                pdf = await new Promise((ok, no) => { const f = new FileReader(); f.onload = () => ok(String(f.result).split('base64,')[1]); f.onerror = no; f.readAsDataURL(blob); });
+            } catch (x) { pdf = ''; }
+            return {docHtml: await buildReportHTML(d, false), pdf};
         }
 
         async function downloadAsPDF() {
             if (!needGenerated()) return;
             document.body.style.cursor = 'wait';
             try {
-                const pdf = await makePdf(lastData);
-                if (!pdf) { await printReport(); return; }
-                pdf.save(safeName(lastData.chapterName) + '.pdf');
+                saveBlob(await makePdf(lastData), safeName(lastData.chapterName) + '.pdf');
                 showNotification('PDF Export', 'PDF downloaded. It is identical to the on-screen pages.', 'success');
-            } catch (err) { notifyFail(err); }
+            } catch (err) { showNotification('Use Print Instead', 'This browser could not draw the PDF directly. Use Chrome or Edge, or press "Print All" and choose Save as PDF.', 'info'); }
             document.body.style.cursor = '';
         }
         async function downloadAsDOCX() {
@@ -726,6 +796,9 @@
             f.onload = () => { setTimeout(() => { f.contentWindow.focus(); f.contentWindow.print(); }, 400); setTimeout(() => f.remove(), 120000); };
             f.srcdoc = html; document.body.appendChild(f);
         }
+        // Ctrl+P on the main page prints every tab, not just the open one
+        window.addEventListener('beforeprint', () => { if (lastData) ['diary', 'lessons', 'activity', 'qa'].forEach(k => document.getElementById('tab-content-' + k).classList.remove('hidden')); });
+        window.addEventListener('afterprint', () => { if (lastData) switchTab(currentTab); });
 
         async function generateDocuments(e) {
             e.preventDefault();
@@ -773,7 +846,7 @@
         // Optional: paste your Apps Script /exec URL here so every teacher gets it automatically on GitHub Pages
         const DEFAULT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzeKEBIIM-vuqSUtM2qfsBXWkfk8W8-Ofn9MfHzVFBNuN0V7lyf_cxt7DkzaAvRFwQYcA/exec';
         async function api(action, payload) {
-            const url = store.get('tdUrl') || DEFAULT_WEB_APP_URL;
+            const url = DEFAULT_WEB_APP_URL || store.get('tdUrl');
             if (!url) { openSettings(); throw new Error('Please paste your Google Drive Web App URL in Settings first.'); }
             if (!/^https:\/\/script\.google(usercontent)?\.com\/(a\/[^/]+\/)?macros\/s\/[^/\s]+\/exec$/.test(url.trim())) throw new Error('The Web App URL looks wrong. It must start with https://script.google.com/macros/s/ and end with /exec (not /dev, and not the script editor link).');
             let res;
@@ -785,7 +858,7 @@
             if (!data.ok) throw new Error(data.message || 'Request was not completed.');
             return data;
         }
-        function openSettings() { document.getElementById('cfg-url').value = store.get('tdUrl') || DEFAULT_WEB_APP_URL; document.getElementById('cfg-key').value = store.get('tdKey'); openModal('settings-modal'); }
+        function openSettings() { document.getElementById('cfg-url').value = DEFAULT_WEB_APP_URL || store.get('tdUrl'); document.getElementById('cfg-key').value = store.get('tdKey'); openModal('settings-modal'); }
         function saveSettings() {
             store.set('tdUrl', document.getElementById('cfg-url').value.trim());
             store.set('tdKey', document.getElementById('cfg-key').value);
@@ -808,7 +881,7 @@
                 const box = document.getElementById('save-status');
                 box.innerHTML = `<i class="fas fa-circle-check mr-1"></i> Saved <b>${escapeHtml(r.files.join(' & '))}</b> in <b>${escapeHtml(r.path)}</b> &nbsp;<a class="underline font-semibold" target="_blank" rel="noopener" href="${escapeHtml(r.folderUrl)}">Open folder</a>`;
                 box.classList.remove('hidden');
-                showNotification('Saved to Drive', `${r.files.join(' & ')} saved in ${r.path}`, 'success');
+                if (!r.files.some(f => f.endsWith('.pdf'))) showNotification('Saved (DOC only)', `${r.files.join(' & ')} saved in ${r.path}. The PDF could not be drawn in this browser, so none was saved. Please use Chrome or Edge and save again.`, 'info'); else showNotification('Saved to Drive', `${r.files.join(' & ')} saved in ${r.path}`, 'success');
             } catch (err) { notifyFail(err); }
             btn.disabled = false; btn.innerHTML = old;
         }
